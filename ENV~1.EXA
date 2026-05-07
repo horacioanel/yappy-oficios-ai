@@ -1,0 +1,44 @@
+# =============================================================
+# Yappy Oficios AI · Variables de entorno
+# Copia este archivo a `.env.local` y rellena con tus valores reales.
+# NUNCA commitees `.env.local` al repositorio (ya está en .gitignore).
+# =============================================================
+
+# -----------------------------------------------------------------------------
+# Proveedor de email principal: Resend (https://resend.com).
+# Plan gratis: 3.000 emails/mes, 100/día.
+# Crea una API key en https://resend.com/api-keys
+# Si esta variable está definida, la API la usa por defecto.
+# -----------------------------------------------------------------------------
+RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# -----------------------------------------------------------------------------
+# Fallback: webhook de Make / Zapier / endpoint propio.
+# Solo se usa si RESEND_API_KEY NO está definido.
+# La función serverless hará un POST con: { from, to, subject, body }
+# Esta URL NUNCA se expone al navegador.
+# -----------------------------------------------------------------------------
+MAKE_WEBHOOK_URL=https://hook.us2.make.com/xxxxxxxxxxxxxxxxxxxxxxxx
+
+# -----------------------------------------------------------------------------
+# Remitente "From" que aparecerá en los correos.
+# Para Resend en producción debes verificar el dominio en su panel.
+# Mientras tanto puedes usar: onboarding@resend.dev (su dominio de test).
+# -----------------------------------------------------------------------------
+MAIL_FROM=onboarding@resend.dev
+
+# -----------------------------------------------------------------------------
+# (Opcional) Token compartido para autenticar peticiones a /api/send-email.
+# Si lo defines, el frontend debe enviar el header `x-api-token` con el mismo valor.
+# Útil si quieres proteger la API con una clave en lugar de solo same-origin.
+# Déjalo vacío para no exigir token.
+# -----------------------------------------------------------------------------
+API_TOKEN=
+
+# -----------------------------------------------------------------------------
+# (Opcional) Origen permitido. Si lo defines, la función rechaza peticiones
+# cuyo header Origin no coincida. Útil para impedir abuso desde otros dominios.
+# Ejemplo: https://yappy-oficios-ai.vercel.app
+# Déjalo vacío para permitir cualquier origen.
+# -----------------------------------------------------------------------------
+ALLOWED_ORIGIN=

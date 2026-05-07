@@ -1,0 +1,2668 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yappy Oficios AI</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+:root {
+  --yappy-blue: #003DA5;
+  --yappy-blue-dark: #002A7A;
+  --yappy-blue-light: #1A5BB8;
+  --yappy-orange: #FF6A13;
+  --yappy-orange-soft: #FFE2D1;
+  --yappy-bg: #F4F6FB;
+  --yappy-surface: #FFFFFF;
+  --yappy-border: #E1E5EE;
+  --yappy-text: #1A2238;
+  --yappy-muted: #6B7388;
+  --yappy-success: #1B9E5A;
+  --yappy-warning: #E0A800;
+  --yappy-danger: #D6336C;
+  --yappy-info: #1A5BB8;
+  --shadow-sm: 0 1px 2px rgba(20,30,60,.05);
+  --shadow-md: 0 6px 18px rgba(20,30,60,.08);
+  --shadow-lg: 0 16px 40px rgba(20,30,60,.12);
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; height: 100%; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--yappy-bg);
+  color: var(--yappy-text);
+  font-size: 14px;
+  line-height: 1.5;
+}
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+input, select, textarea { font-family: inherit; font-size: 14px; color: var(--yappy-text); }
+a { color: var(--yappy-blue); text-decoration: none; }
+.hidden { display: none !important; }
+
+/* ============ AUTH ============ */
+.auth-wrap {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: linear-gradient(135deg, var(--yappy-blue) 0%, var(--yappy-blue-dark) 100%);
+}
+.auth-hero {
+  color: #fff;
+  padding: 60px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.auth-hero .logo {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 22px; font-weight: 700; letter-spacing: .3px;
+}
+.auth-hero .logo-mark {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: var(--yappy-orange);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800;
+}
+.auth-hero h1 { font-size: 38px; margin: 16px 0 12px; line-height: 1.15; }
+.auth-hero p.lead { font-size: 16px; opacity: .9; max-width: 460px; }
+.auth-hero .features { margin-top: 32px; display: grid; gap: 12px; }
+.auth-hero .feature {
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-size: 13.5px;
+  display: flex; gap: 12px; align-items: flex-start;
+}
+.auth-hero .feature .icon { font-size: 20px; }
+.auth-hero .footer-note { font-size: 12px; opacity: .7; }
+
+.auth-card {
+  background: var(--yappy-surface);
+  display: flex; align-items: center; justify-content: center;
+  padding: 40px;
+}
+.auth-form {
+  width: 100%;
+  max-width: 420px;
+}
+.auth-form h2 { margin: 0 0 6px; font-size: 24px; }
+.auth-form .sub { color: var(--yappy-muted); margin-bottom: 24px; }
+.auth-form .field { margin-bottom: 14px; }
+.auth-form label { display: block; font-size: 12.5px; font-weight: 600; color: var(--yappy-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .4px; }
+.auth-form input {
+  width: 100%; padding: 12px 14px;
+  border: 1.5px solid var(--yappy-border);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color .15s;
+}
+.auth-form input:focus { border-color: var(--yappy-blue); }
+.auth-form .btn-primary {
+  width: 100%; padding: 13px;
+  background: var(--yappy-blue); color: #fff; font-weight: 600;
+  border-radius: var(--radius-sm);
+  margin-top: 6px;
+}
+.auth-form .btn-primary:hover { background: var(--yappy-blue-dark); }
+.auth-form .switch {
+  text-align: center; margin-top: 18px; font-size: 13px; color: var(--yappy-muted);
+}
+.auth-form .switch button { color: var(--yappy-blue); font-weight: 600; }
+.auth-form .otp-box {
+  display: flex; gap: 8px; justify-content: center; margin-top: 12px;
+}
+.auth-form .otp-box input {
+  width: 50px; height: 56px; text-align: center; font-size: 20px; font-weight: 700;
+}
+.auth-form .alert {
+  padding: 10px 12px; border-radius: var(--radius-sm); font-size: 13px; margin-bottom: 12px;
+}
+.auth-form .alert.error { background: #FFE3EC; color: var(--yappy-danger); }
+.auth-form .alert.info { background: #E7F0FB; color: var(--yappy-blue); }
+.auth-form .alert.success { background: #DCF5E7; color: var(--yappy-success); }
+.auth-form .otp-hint {
+  font-size: 12px; color: var(--yappy-muted); text-align: center;
+}
+.auth-form .otp-hint code {
+  background: var(--yappy-bg); padding: 2px 8px; border-radius: 6px; font-weight: 700;
+  color: var(--yappy-orange); font-size: 14px;
+}
+
+/* ============ APP SHELL ============ */
+.app-shell {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100vh;
+}
+.sidebar {
+  background: var(--yappy-blue-dark);
+  color: #fff;
+  padding: 20px 0;
+  display: flex; flex-direction: column;
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+}
+.sidebar .brand {
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 20px 20px;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+  margin-bottom: 14px;
+}
+.sidebar .brand .mark {
+  width: 36px; height: 36px; border-radius: 8px; background: var(--yappy-orange);
+  display: flex; align-items: center; justify-content: center; font-weight: 800;
+}
+.sidebar .brand .name { font-weight: 700; font-size: 15px; }
+.sidebar .brand .sub { font-size: 11px; opacity: .7; }
+.sidebar .nav { flex: 1; }
+.sidebar .nav-section { padding: 14px 20px 6px; font-size: 11px; text-transform: uppercase; letter-spacing: .8px; opacity: .55; }
+.sidebar .nav-item {
+  display: flex; align-items: center; gap: 11px;
+  width: 100%;
+  padding: 10px 20px; color: #cbd6ee; font-size: 13.5px; text-align: left;
+  border-left: 3px solid transparent;
+}
+.sidebar .nav-item:hover { background: rgba(255,255,255,.05); color: #fff; }
+.sidebar .nav-item.active { background: rgba(255,255,255,.08); color: #fff; border-left-color: var(--yappy-orange); font-weight: 600; }
+.sidebar .nav-item .ic { width: 18px; text-align: center; opacity: .9; }
+
+.main { display: flex; flex-direction: column; min-width: 0; }
+.topbar {
+  background: var(--yappy-surface);
+  border-bottom: 1px solid var(--yappy-border);
+  padding: 12px 28px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 10;
+}
+.topbar h1 { font-size: 18px; margin: 0; }
+.topbar .user {
+  display: flex; align-items: center; gap: 12px;
+}
+.topbar .user .avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--yappy-blue); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 14px;
+}
+.topbar .user .who { line-height: 1.2; }
+.topbar .user .who b { font-size: 13.5px; }
+.topbar .user .who small { color: var(--yappy-muted); font-size: 12px; }
+.topbar .role-pill {
+  background: var(--yappy-orange-soft); color: var(--yappy-orange);
+  font-weight: 700; font-size: 11px; padding: 3px 9px; border-radius: 12px;
+  text-transform: uppercase; letter-spacing: .5px;
+}
+.topbar button.logout {
+  padding: 8px 14px; border-radius: 8px; background: var(--yappy-bg); color: var(--yappy-text);
+  font-weight: 600; font-size: 13px;
+}
+.topbar button.logout:hover { background: #E6EAF3; }
+
+.view { padding: 24px 28px 60px; max-width: 1400px; }
+.view h2.page-title { font-size: 22px; margin: 0 0 4px; }
+.view .page-sub { color: var(--yappy-muted); margin-bottom: 22px; }
+
+/* Cards */
+.card { background: var(--yappy-surface); border: 1px solid var(--yappy-border); border-radius: var(--radius); box-shadow: var(--shadow-sm); }
+.card-head { padding: 14px 18px; border-bottom: 1px solid var(--yappy-border); display: flex; justify-content: space-between; align-items: center; }
+.card-head h3 { margin: 0; font-size: 15px; }
+.card-body { padding: 18px; }
+.card-pad { padding: 18px; }
+
+/* KPI grid */
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 18px; }
+.kpi {
+  background: var(--yappy-surface); border: 1px solid var(--yappy-border);
+  border-radius: var(--radius); padding: 14px 16px;
+  position: relative; overflow: hidden;
+}
+.kpi .label { font-size: 12px; color: var(--yappy-muted); text-transform: uppercase; letter-spacing: .4px; }
+.kpi .value { font-size: 26px; font-weight: 700; margin-top: 4px; }
+.kpi .delta { font-size: 12px; color: var(--yappy-muted); margin-top: 2px; }
+.kpi.accent-blue::after { content: ''; position: absolute; right: -22px; top: -22px; width: 80px; height: 80px; border-radius: 50%; background: rgba(0,61,165,.06); }
+.kpi.accent-orange::after { content: ''; position: absolute; right: -22px; top: -22px; width: 80px; height: 80px; border-radius: 50%; background: rgba(255,106,19,.08); }
+.kpi.accent-green::after { content: ''; position: absolute; right: -22px; top: -22px; width: 80px; height: 80px; border-radius: 50%; background: rgba(27,158,90,.08); }
+.kpi.accent-red::after { content: ''; position: absolute; right: -22px; top: -22px; width: 80px; height: 80px; border-radius: 50%; background: rgba(214,51,108,.08); }
+
+.dashboard-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 18px; }
+
+/* Buttons */
+.btn { padding: 9px 16px; border-radius: 8px; font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; }
+.btn-primary { background: var(--yappy-blue); color: #fff; }
+.btn-primary:hover { background: var(--yappy-blue-dark); }
+.btn-success { background: var(--yappy-success); color: #fff; }
+.btn-success:hover { background: #157C45; }
+.btn-danger { background: var(--yappy-danger); color: #fff; }
+.btn-danger:hover { background: #B62558; }
+.btn-secondary { background: var(--yappy-bg); color: var(--yappy-text); border: 1px solid var(--yappy-border); }
+.btn-secondary:hover { background: #E6EAF3; }
+.btn-orange { background: var(--yappy-orange); color: #fff; }
+.btn-orange:hover { background: #E55A0A; }
+.btn-ghost { background: transparent; color: var(--yappy-blue); }
+.btn-ghost:hover { background: rgba(0,61,165,.06); }
+
+/* Forms */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 18px; }
+.form-grid.cols-1 { grid-template-columns: 1fr; }
+.field-block { display: flex; flex-direction: column; }
+.field-block label { font-size: 12px; font-weight: 600; color: var(--yappy-muted); text-transform: uppercase; letter-spacing: .3px; margin-bottom: 6px; }
+.field-block input, .field-block select, .field-block textarea {
+  padding: 10px 12px; border: 1.5px solid var(--yappy-border); border-radius: 8px; outline: none; background: #fff;
+}
+.field-block input:focus, .field-block select:focus, .field-block textarea:focus { border-color: var(--yappy-blue); }
+.field-block textarea { min-height: 80px; resize: vertical; }
+.field-block .hint { font-size: 11.5px; color: var(--yappy-muted); margin-top: 4px; }
+.form-actions { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+
+/* Tables */
+.table-wrap { overflow-x: auto; }
+table.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+table.data-table th, table.data-table td { padding: 11px 14px; text-align: left; border-bottom: 1px solid var(--yappy-border); }
+table.data-table th { background: #FAFBFE; font-weight: 600; color: var(--yappy-muted); font-size: 11.5px; text-transform: uppercase; letter-spacing: .4px; }
+table.data-table tr:hover td { background: #FBFCFF; }
+table.data-table tr.row-link { cursor: pointer; }
+table.data-table .num { font-variant-numeric: tabular-nums; }
+
+/* Status pills */
+.status {
+  display: inline-block; padding: 3px 9px; font-size: 11.5px; font-weight: 600;
+  border-radius: 12px; text-transform: uppercase; letter-spacing: .3px;
+}
+.status.gray { background: #ECEEF4; color: #5C6374; }
+.status.blue { background: #E0EBF9; color: var(--yappy-blue); }
+.status.orange { background: var(--yappy-orange-soft); color: var(--yappy-orange); }
+.status.green { background: #D7F2E3; color: var(--yappy-success); }
+.status.red { background: #FFE0EC; color: var(--yappy-danger); }
+.status.yellow { background: #FFF3CD; color: #8A6D00; }
+.status.purple { background: #EDE0FF; color: #6E2EBF; }
+
+/* Filters bar */
+.filters { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+.filters select, .filters input {
+  padding: 8px 10px; border-radius: 8px; border: 1.5px solid var(--yappy-border); background: #fff; min-width: 150px;
+}
+
+/* Detail layout */
+.detail-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 18px; align-items: start; }
+.kv { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; }
+.kv .k { font-size: 11.5px; color: var(--yappy-muted); text-transform: uppercase; letter-spacing: .3px; }
+.kv .v { font-weight: 500; font-size: 13.5px; }
+
+/* Timeline */
+.timeline { position: relative; padding-left: 22px; }
+.timeline::before { content: ''; position: absolute; left: 8px; top: 4px; bottom: 4px; width: 2px; background: var(--yappy-border); }
+.tl-item { position: relative; padding-bottom: 14px; }
+.tl-item::before { content: ''; position: absolute; left: -18px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--yappy-orange); border: 2px solid #fff; box-shadow: 0 0 0 2px var(--yappy-orange-soft); }
+.tl-item.green::before { background: var(--yappy-success); box-shadow: 0 0 0 2px #D7F2E3; }
+.tl-item.blue::before { background: var(--yappy-blue); box-shadow: 0 0 0 2px #E0EBF9; }
+.tl-item.red::before { background: var(--yappy-danger); box-shadow: 0 0 0 2px #FFE0EC; }
+.tl-item .tl-time { font-size: 11.5px; color: var(--yappy-muted); }
+.tl-item .tl-msg { font-size: 13px; }
+.tl-item .tl-msg b { font-weight: 600; }
+
+/* Letter */
+.letter {
+  background: #fff; border: 1px solid var(--yappy-border); border-radius: 10px;
+  padding: 28px 32px; font-family: 'Georgia', 'Times New Roman', serif; line-height: 1.55;
+  box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
+}
+.letter.draft::before {
+  content: 'BORRADOR'; position: absolute; top: 24px; right: 32px;
+  font-family: Inter, sans-serif; font-size: 11px; font-weight: 800;
+  letter-spacing: 4px; color: var(--yappy-orange);
+  border: 2px solid var(--yappy-orange); padding: 6px 12px; border-radius: 6px;
+  transform: rotate(-3deg); opacity: .85;
+}
+.letter h1 { font-size: 18px; text-align: center; margin: 0 0 4px; color: var(--yappy-blue); font-family: Inter; }
+.letter .small { font-family: Inter; font-size: 12px; color: var(--yappy-muted); text-align: center; margin-bottom: 18px; }
+.letter table.lt { width: 100%; border-collapse: collapse; margin: 12px 0; font-family: Inter; font-size: 13px; }
+.letter table.lt th, .letter table.lt td { padding: 8px 10px; border: 1px solid var(--yappy-border); text-align: left; }
+.letter table.lt th { background: #F4F6FB; font-weight: 600; }
+.letter .sig { margin-top: 30px; font-family: Inter; }
+.letter .sig .name { font-weight: 700; }
+.letter .draft-note {
+  font-family: Inter; background: var(--yappy-orange-soft); color: var(--yappy-orange);
+  padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 600;
+  margin-bottom: 14px;
+}
+
+/* Process map */
+.flowmap { display: flex; flex-direction: column; gap: 12px; align-items: center; padding: 20px 10px; }
+.flow-row { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; justify-content: center; }
+.flow-node {
+  background: #fff; border: 2px solid var(--yappy-blue); color: var(--yappy-blue);
+  padding: 10px 16px; border-radius: 10px; font-weight: 600; font-size: 13px;
+  text-align: center; min-width: 180px;
+}
+.flow-node.start { background: var(--yappy-blue); color: #fff; }
+.flow-node.decision { background: var(--yappy-orange-soft); border-color: var(--yappy-orange); color: var(--yappy-orange); transform: rotate(45deg) scale(.8); width: 130px; height: 130px; display: flex; align-items: center; justify-content: center; }
+.flow-node.decision span { transform: rotate(-45deg); display: block; padding: 0 10px; }
+.flow-node.end { background: var(--yappy-success); color: #fff; border-color: var(--yappy-success); }
+.flow-node.bad { background: var(--yappy-danger); color: #fff; border-color: var(--yappy-danger); }
+.flow-arrow { font-size: 22px; color: var(--yappy-muted); }
+
+/* Modal */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(20,30,60,.55);
+  display: flex; align-items: center; justify-content: center; z-index: 100;
+  padding: 20px;
+}
+.modal {
+  background: #fff; border-radius: var(--radius); width: 100%; max-width: 540px;
+  box-shadow: var(--shadow-lg);
+  max-height: 90vh; overflow-y: auto;
+}
+.modal-head { padding: 16px 20px; border-bottom: 1px solid var(--yappy-border); display: flex; justify-content: space-between; align-items: center; }
+.modal-head h3 { margin: 0; }
+.modal-body { padding: 20px; }
+.modal-foot { padding: 14px 20px; border-top: 1px solid var(--yappy-border); display: flex; gap: 10px; justify-content: flex-end; }
+
+/* Toast */
+.toast-wrap { position: fixed; top: 20px; right: 20px; z-index: 200; display: flex; flex-direction: column; gap: 10px; }
+.toast {
+  background: #fff; border-left: 4px solid var(--yappy-blue);
+  padding: 12px 16px; border-radius: 8px; box-shadow: var(--shadow-md);
+  min-width: 280px; max-width: 380px; font-size: 13px;
+  animation: slideIn .25s ease-out;
+}
+.toast.success { border-left-color: var(--yappy-success); }
+.toast.error { border-left-color: var(--yappy-danger); }
+.toast.warning { border-left-color: var(--yappy-warning); }
+.toast b { display: block; margin-bottom: 2px; }
+@keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+/* Inbox simulator */
+.inbox-msg {
+  border: 1px solid var(--yappy-border); border-radius: 10px; padding: 14px 16px;
+  margin-bottom: 10px; background: #fff;
+}
+.inbox-msg .meta { font-size: 12px; color: var(--yappy-muted); display: flex; gap: 14px; margin-bottom: 6px; }
+.inbox-msg .subj { font-weight: 600; font-size: 14px; margin-bottom: 6px; }
+.inbox-msg pre {
+  background: #FAFBFE; padding: 10px; border-radius: 6px; font-size: 12px;
+  white-space: pre-wrap; word-break: break-word; font-family: 'SF Mono', monospace;
+  max-height: 240px; overflow: auto;
+}
+
+/* Chips */
+.chip { display: inline-block; padding: 2px 8px; background: var(--yappy-bg); border-radius: 10px; font-size: 11.5px; color: var(--yappy-muted); margin-right: 4px; }
+
+/* Two col grid responsive */
+@media (max-width: 1100px) {
+  .dashboard-grid { grid-template-columns: 1fr; }
+  .detail-grid { grid-template-columns: 1fr; }
+  .form-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 720px) {
+  .auth-wrap { grid-template-columns: 1fr; }
+  .auth-hero { display: none; }
+  .app-shell { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; }
+}
+
+.tag-info { font-size: 11px; padding: 2px 8px; border-radius: 10px; background: #E0EBF9; color: var(--yappy-blue); font-weight: 600; }
+.divider { height: 1px; background: var(--yappy-border); margin: 14px 0; }
+.muted { color: var(--yappy-muted); }
+.right { text-align: right; }
+.text-success { color: var(--yappy-success); }
+.text-danger { color: var(--yappy-danger); }
+.text-orange { color: var(--yappy-orange); }
+.bold { font-weight: 700; }
+.flex { display: flex; }
+.gap-8 { gap: 8px; }
+.gap-12 { gap: 12px; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.mt-12 { margin-top: 12px; }
+.mb-12 { margin-bottom: 12px; }
+.mt-20 { margin-top: 20px; }
+.mb-20 { margin-bottom: 20px; }
+
+</style>
+</head>
+<body>
+
+<!-- ============== AUTH SCREEN ============== -->
+<div id="auth-screen">
+  <div class="auth-wrap">
+    <div class="auth-hero">
+      <div>
+        <div class="logo">
+          <div class="logo-mark">Y</div>
+          Yappy Oficios AI
+        </div>
+        <h1>Automatice la respuesta a oficios legales con trazabilidad total.</h1>
+        <p class="lead">Genere, valide, envíe y audite respuestas a oficios de autoridades en minutos. Diseñado para equipos de Legal, Cumplimiento, Operaciones y Tecnología.</p>
+        <div class="features">
+          <div class="feature"><div class="icon">⚖️</div><div><b>Validación humana obligatoria.</b> Ninguna carta sale sin aprobación.</div></div>
+          <div class="feature"><div class="icon">🔍</div><div><b>Búsqueda automática</b> sobre la base de datos de usuarios y transacciones.</div></div>
+          <div class="feature"><div class="icon">📜</div><div><b>Bitácora auditable</b> con quién, cuándo y por qué de cada acción.</div></div>
+          <div class="feature"><div class="icon">📬</div><div><b>Tratamiento manual</b> para casos rechazados o sin datos suficientes.</div></div>
+        </div>
+      </div>
+      <div class="footer-note">Prototipo interno · Datos ficticios · No usar con datos reales de clientes.</div>
+    </div>
+
+    <div class="auth-card">
+      <!-- Login -->
+      <div class="auth-form" id="form-login">
+        <h2>Iniciar sesión</h2>
+        <div class="sub">Acceda al portal con su cuenta verificada.</div>
+        <div id="login-alert"></div>
+        <div class="field"><label>Email</label><input type="email" id="login-email" placeholder="usuario@empresa.com"></div>
+        <div class="field"><label>Contraseña</label><input type="password" id="login-password"></div>
+        <button class="btn-primary" onclick="doLogin()">Iniciar sesión</button>
+        <div class="switch">¿No tiene cuenta? <button onclick="showAuthForm('signup')">Registrarse</button></div>
+      </div>
+
+      <!-- Signup -->
+      <div class="auth-form hidden" id="form-signup">
+        <h2>Crear cuenta</h2>
+        <div class="sub">Active su acceso al portal con verificación por email.</div>
+        <div id="signup-alert"></div>
+        <div class="field"><label>Nombre completo</label><input type="text" id="signup-name" placeholder="Ana Pérez"></div>
+        <div class="field"><label>Email corporativo</label><input type="email" id="signup-email" placeholder="ana.perez@empresa.com"></div>
+        <div class="field"><label>Rol</label>
+          <select id="signup-role" style="width:100%;padding:12px 14px;border:1.5px solid var(--yappy-border);border-radius:8px;">
+            <option value="legal">Legal</option>
+            <option value="cumplimiento">Cumplimiento</option>
+            <option value="operaciones">Operaciones</option>
+            <option value="abogado">Abogado</option>
+            <option value="lector">Lector</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+        <div class="field"><label>Contraseña</label><input type="password" id="signup-password" placeholder="Mínimo 8 caracteres"></div>
+        <button class="btn-primary" onclick="doSignup()">Crear cuenta y enviar OTP</button>
+        <div class="switch">¿Ya tiene cuenta? <button onclick="showAuthForm('login')">Iniciar sesión</button></div>
+      </div>
+
+      <!-- OTP -->
+      <div class="auth-form hidden" id="form-otp">
+        <h2>Verificación de email</h2>
+        <div class="sub">Introduzca el código de 6 dígitos enviado a <b id="otp-email-display"></b>.</div>
+        <div id="otp-alert"></div>
+        <div class="otp-box">
+          <input maxlength="1" oninput="otpHop(0)" id="otp-0">
+          <input maxlength="1" oninput="otpHop(1)" id="otp-1">
+          <input maxlength="1" oninput="otpHop(2)" id="otp-2">
+          <input maxlength="1" oninput="otpHop(3)" id="otp-3">
+          <input maxlength="1" oninput="otpHop(4)" id="otp-4">
+          <input maxlength="1" oninput="otpHop(5)" id="otp-5">
+        </div>
+        <div class="otp-hint" style="margin:14px 0;">
+          Modo demo: el OTP también aparece aquí <span id="otp-demo-code"></span>. En producción se entrega solo por correo.
+        </div>
+        <button class="btn-primary" onclick="doVerifyOtp()">Verificar y activar cuenta</button>
+        <div class="switch">¿No recibió el código? <button onclick="resendOtp()">Reenviar OTP</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============== APP SHELL ============== -->
+<div id="app-screen" class="hidden">
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="mark">Y</div>
+        <div>
+          <div class="name">Yappy Oficios AI</div>
+          <div class="sub">Legal · Compliance · Ops</div>
+        </div>
+      </div>
+      <nav class="nav">
+        <div class="nav-section">Operación</div>
+        <button class="nav-item" data-route="dashboard"><span class="ic">📊</span> Dashboard</button>
+        <button class="nav-item" data-route="register"><span class="ic">📝</span> Registrar oficio</button>
+        <button class="nav-item" data-route="cases"><span class="ic">📥</span> Bandeja de oficios</button>
+        <button class="nav-item" data-route="validation"><span class="ic">✅</span> Validación de cartas</button>
+        <button class="nav-item" data-route="manual"><span class="ic">⚖️</span> Tratamiento manual</button>
+
+        <div class="nav-section">Trazabilidad</div>
+        <button class="nav-item" data-route="history"><span class="ic">📚</span> Historial de respuestas</button>
+        <button class="nav-item" data-route="audit"><span class="ic">🧾</span> Bitácora</button>
+        <button class="nav-item" data-route="map"><span class="ic">🗺️</span> Mapa del proceso</button>
+
+        <div class="nav-section">Administración</div>
+        <button class="nav-item" data-route="users"><span class="ic">👥</span> Usuarios y roles</button>
+        <button class="nav-item" data-route="settings"><span class="ic">⚙️</span> Configuración</button>
+        <button class="nav-item" data-route="inbox"><span class="ic">📨</span> Bandeja correo (demo)</button>
+      </nav>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <h1 id="topbar-title">Dashboard</h1>
+        <div class="user">
+          <div class="who right">
+            <b id="user-name">—</b><br>
+            <small id="user-email">—</small>
+          </div>
+          <span class="role-pill" id="user-role">—</span>
+          <div class="avatar" id="user-avatar">?</div>
+          <button class="logout" onclick="doLogout()">Cerrar sesión</button>
+        </div>
+      </header>
+      <div class="view" id="view"></div>
+    </div>
+  </div>
+</div>
+
+<div id="modal-root"></div>
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script>
+/* =====================================================
+   STATE & PERSISTENCE
+===================================================== */
+const STORE_KEY = 'yappy_oficios_ai_v1';
+
+const State = {
+  appUsers: [],
+  pendingSignup: null,
+  session: null,
+  data: {
+    users: [],
+    transactions: [],
+    cases: [],
+    caseResults: [],
+    letters: [],
+    manualCases: [],
+    auditLogs: [],
+    inbox: []
+  },
+  smtp: {
+    mode: 'api', // api (recomendado en producción) | simulated | webhook (legacy local) | smtp (legacy local)
+    webhookUrl: '',
+    host: '', port: '', user: '', pass: '', from: 'no-reply@yappy-oficios.local'
+  }
+};
+
+function persist() {
+  const dump = {
+    appUsers: State.appUsers,
+    data: State.data,
+    smtp: State.smtp
+  };
+  localStorage.setItem(STORE_KEY, JSON.stringify(dump));
+}
+function loadStore() {
+  const raw = localStorage.getItem(STORE_KEY);
+  if (!raw) return false;
+  try {
+    const o = JSON.parse(raw);
+    if (o.appUsers) State.appUsers = o.appUsers;
+    if (o.data) State.data = Object.assign(State.data, o.data);
+    if (o.smtp) State.smtp = Object.assign(State.smtp, o.smtp);
+    return true;
+  } catch(e) { return false; }
+}
+
+/* =====================================================
+   UTILS
+===================================================== */
+const fmtMoney = (n) => 'USD ' + (Number(n)||0).toFixed(2);
+const fmtDate = (d) => { if(!d) return '—'; const dt = new Date(d); if (isNaN(dt)) return d; return dt.toISOString().slice(0,10); };
+const fmtDateTime = (d) => { if(!d) return '—'; const dt = new Date(d); if (isNaN(dt)) return d; return dt.toISOString().replace('T',' ').slice(0,19); };
+const nowISO = () => new Date().toISOString();
+const uid = (p='ID') => p + '-' + Math.random().toString(36).slice(2,8).toUpperCase();
+const randomFromArr = (a) => a[Math.floor(Math.random()*a.length)];
+const randomInt = (min, max) => Math.floor(Math.random()*(max-min+1))+min;
+const daysAgo = (n) => { const d=new Date(); d.setDate(d.getDate()-n); return d.toISOString(); };
+
+async function sha256(text) {
+  const enc = new TextEncoder().encode(text);
+  const buf = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+function genOTP() {
+  return ('' + Math.floor(Math.random()*900000+100000)).slice(0,6);
+}
+
+function toast(msg, type='info', title='') {
+  const wrap = document.getElementById('toast-wrap');
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.innerHTML = (title?`<b>${title}</b>`:'') + msg;
+  wrap.appendChild(el);
+  setTimeout(()=>{ el.style.opacity=0; setTimeout(()=>el.remove(),300); }, 4500);
+}
+
+function audit(caseId, action, prev, next, comment='', resultado='OK') {
+  const u = State.session;
+  State.data.auditLogs.unshift({
+    log_id: uid('LOG'),
+    case_id: caseId,
+    fecha_hora: nowISO(),
+    usuario: u ? u.nombre : 'Sistema',
+    email_usuario: u ? u.email : 'system@yappy-oficios.local',
+    rol: u ? u.rol : 'sistema',
+    accion: action,
+    estado_anterior: prev || '',
+    estado_nuevo: next || '',
+    comentario: comment,
+    resultado,
+    canal: 'web',
+    ip_simulada: '10.10.' + randomInt(0,255) + '.' + randomInt(0,255)
+  });
+}
+
+/* =====================================================
+   SEED DATA (50 users, 200 tx, 25 cases, etc.)
+===================================================== */
+function seedData() {
+  if (State.data.users.length > 0) return;
+
+  const nombres = ['Juan','María','Carlos','Ana','Luis','Patricia','Jorge','Sofía','Miguel','Laura','Pedro','Andrea','Roberto','Carolina','Diego','Valeria','Ricardo','Elena','Fernando','Camila','Hugo','Daniela','Iván','Silvia','Marcos','Natalia','Eduardo','Gabriela','Alberto','Lucía','Antonio','Beatriz','Esteban','Paola','Manuel','Verónica','Raúl','Adriana','Salvador','Mónica','Tomás','Liliana','Nicolás','Renata','Octavio','Clara','Pablo','Rocío','Sebastián','Mariana'];
+  const apellidos = ['Pérez','Gómez','Rodríguez','Martínez','López','Hernández','González','Sánchez','Ramírez','Torres','Jiménez','Vargas','Castro','Romero','Ortiz','Mendoza','Cruz','Díaz','Reyes','Morales','Herrera','Flores','Aguilar','Medina','Rojas','Ríos','Núñez','Silva','Soto','Gutiérrez'];
+  const bancos = ['Banco General','Banistmo','BAC Credomatic','Banesco','Caja de Ahorros','Banco Nacional','Global Bank','Multibank','Banco Aliado','Towerbank'];
+  const tiposU = ['Persona Natural','Persona Natural','Persona Natural','Persona Natural','Comercio'];
+
+  // 50 Yappy users
+  for (let i=1; i<=50; i++) {
+    const nombre = randomFromArr(nombres);
+    const apellido = randomFromArr(apellidos);
+    const cell = '6' + (Math.floor(Math.random()*9000000)+1000000);
+    const id = randomInt(1,9) + '-' + randomInt(100,999) + '-' + randomInt(100,999);
+    const reg = new Date(2022, randomInt(0,11), randomInt(1,28));
+    State.data.users.push({
+      user_id: 'U' + String(i).padStart(3,'0'),
+      identificacion: id,
+      nombre, apellido,
+      nombre_completo: nombre + ' ' + apellido,
+      celular: cell,
+      email: (nombre+'.'+apellido).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'') + i + '@email.com',
+      banco: randomFromArr(bancos),
+      fecha_registro_yappy: reg.toISOString().slice(0,10),
+      estado_usuario: Math.random()<0.92 ? 'Activo' : 'Inactivo',
+      tipo_usuario: randomFromArr(tiposU),
+      created_at: reg.toISOString(),
+      updated_at: reg.toISOString()
+    });
+  }
+
+  // 200 transactions
+  const tipos = ['P2P Enviado','P2P Recibido','Pago a Comercio','Recarga','Cobro recibido'];
+  const canales = ['App Yappy','Web Yappy','API Comercio'];
+  const estadosTx = ['Exitosa','Exitosa','Exitosa','Exitosa','Rechazada','Pendiente'];
+  const descripciones = ['Pago personal','Cena con amigos','Aporte familiar','Pago de servicio','Compra en línea','Devolución','Pago de alquiler','Suscripción','Ayuda','Comisión','Reembolso'];
+  for (let i=1; i<=200; i++) {
+    const sender = randomFromArr(State.data.users);
+    let receiver = randomFromArr(State.data.users);
+    while (receiver.user_id === sender.user_id) receiver = randomFromArr(State.data.users);
+    const fecha = new Date(2026, randomInt(0,4), randomInt(1,28), randomInt(7,22), randomInt(0,59), randomInt(0,59));
+    const tipo = randomFromArr(tipos);
+    State.data.transactions.push({
+      transaction_id: 'TX' + String(i).padStart(4,'0'),
+      fecha_transaccion: fecha.toISOString().slice(0,10),
+      hora_transaccion: fecha.toISOString().slice(11,19),
+      sender_user_id: sender.user_id,
+      sender_celular: sender.celular,
+      sender_nombre: sender.nombre_completo,
+      receiver_user_id: receiver.user_id,
+      receiver_celular: receiver.celular,
+      receiver_nombre: receiver.nombre_completo,
+      tipo_transaccion: tipo,
+      monto: Number((Math.random()*490+5).toFixed(2)),
+      moneda: 'USD',
+      canal: randomFromArr(canales),
+      estado_transaccion: randomFromArr(estadosTx),
+      descripcion: randomFromArr(descripciones),
+      created_at: fecha.toISOString()
+    });
+  }
+
+  // 25 cases with mixed states
+  const entidades = ['Ministerio Público','Fiscalía Anticorrupción','Fiscalía Contra el Crimen Organizado','Policía Nacional','Unidad de Análisis Financiero','Autoridad Judicial','Juzgado Penal','DIJ','Autoridad Nacional de Transparencia'];
+  const tiposSol = ['Identificación del titular de un número celular','Detalle de transacciones realizadas','Detalle de transacciones recibidas','Identificación y transacciones del usuario','Relación con contrapartes','Información de registro en Yappy','Movimientos en un periodo específico'];
+  const estados = ['Aprobado','Aprobado','Aprobado','Aprobado','Aprobado','Pendiente de validación','Pendiente de validación','Pendiente de validación','Rechazado','Rechazado','En revisión manual','Sin datos encontrados','Correo enviado','Impresa','En sobre','Coordinado con mensajería','Entregado','Cerrado','Cerrado','Cerrado','Carta generada','Resultado encontrado','Buscando en base de datos','Pendiente de búsqueda','Registrado manualmente'];
+  const responsables = ['Ana Pérez','Carlos Méndez','Laura Vega','Diego Solís','Mariana Vargas'];
+
+  for (let i=1; i<=25; i++) {
+    const u = randomFromArr(State.data.users);
+    const ent = randomFromArr(entidades);
+    const ts = randomFromArr(tiposSol);
+    const fOf = new Date(2026, randomInt(0,4), randomInt(1,28));
+    const fIni = new Date(fOf); fIni.setMonth(fIni.getMonth()-2);
+    const fFin = new Date(fOf);
+    const estado = estados[i-1] || randomFromArr(estados);
+    const cas = {
+      case_id: 'OF-' + String(i).padStart(3,'0'),
+      numero_oficio: 'OF-2026-' + String(1000+i),
+      entidad: ent,
+      fecha_recepcion: fOf.toISOString().slice(0,10),
+      fecha_oficio: fOf.toISOString().slice(0,10),
+      celular_consultado: (Math.random() < 0.85 && State.data.users.find(x=>x.celular===u.celular)) ? u.celular : '6' + randomInt(1000000,9999999), // 15% chance no encontrado
+      fecha_inicio: fIni.toISOString().slice(0,10),
+      fecha_fin: fFin.toISOString().slice(0,10),
+      tipo_solicitud: ts,
+      descripcion_solicitud: 'Se solicita la información detallada del titular del número celular consultado y el detalle de transacciones realizadas en el periodo indicado para fines de investigación.',
+      estado,
+      responsable: randomFromArr(responsables),
+      created_by: 'horacioanel@gmail.com',
+      created_at: fOf.toISOString(),
+      updated_at: fOf.toISOString()
+    };
+    State.data.cases.push(cas);
+
+    // Build case_result if applicable
+    const userFound = State.data.users.find(x=>x.celular === cas.celular_consultado);
+    let totalEnv = 0, totalRec = 0, montoEnv = 0, montoRec = 0, txDetail = [];
+    if (userFound) {
+      const txs = State.data.transactions.filter(t =>
+        (t.sender_user_id === userFound.user_id || t.receiver_user_id === userFound.user_id) &&
+        t.fecha_transaccion >= cas.fecha_inicio && t.fecha_transaccion <= cas.fecha_fin
+      );
+      txs.forEach(t => {
+        if (t.sender_user_id === userFound.user_id) { totalEnv++; montoEnv += t.monto; }
+        else { totalRec++; montoRec += t.monto; }
+        txDetail.push(t);
+      });
+    }
+    State.data.caseResults.push({
+      result_id: uid('RES'),
+      case_id: cas.case_id,
+      user_id: userFound ? userFound.user_id : null,
+      celular: cas.celular_consultado,
+      identificacion: userFound ? userFound.identificacion : null,
+      nombre_completo: userFound ? userFound.nombre_completo : null,
+      banco: userFound ? userFound.banco : null,
+      fecha_registro_yappy: userFound ? userFound.fecha_registro_yappy : null,
+      estado_usuario: userFound ? userFound.estado_usuario : null,
+      periodo_consultado: cas.fecha_inicio + ' al ' + cas.fecha_fin,
+      total_transacciones_enviadas: totalEnv,
+      total_transacciones_recibidas: totalRec,
+      monto_total_enviado: Number(montoEnv.toFixed(2)),
+      monto_total_recibido: Number(montoRec.toFixed(2)),
+      detalle_transacciones_json: txDetail,
+      resultado_encontrado: !!userFound,
+      created_at: fOf.toISOString()
+    });
+
+    // Letters and audit logs
+    const baseLog = (action, prev, next, comment='') => {
+      State.data.auditLogs.push({
+        log_id: uid('LOG'), case_id: cas.case_id, fecha_hora: fOf.toISOString(),
+        usuario: cas.responsable, email_usuario: 'sistema@yappy-oficios.local', rol: 'legal',
+        accion: action, estado_anterior: prev||'', estado_nuevo: next||'', comentario: comment,
+        resultado: 'OK', canal: 'web', ip_simulada: '10.10.'+randomInt(0,255)+'.'+randomInt(0,255)
+      });
+    };
+    baseLog('Caso registrado manualmente', '', 'Registrado manualmente');
+    baseLog('Búsqueda automática', 'Registrado manualmente', userFound ? 'Resultado encontrado' : 'Sin datos encontrados');
+
+    if (userFound && ['Aprobado','Correo enviado','Impresa','En sobre','Coordinado con mensajería','Entregado','Cerrado','Pendiente de validación','Carta generada'].includes(estado)) {
+      State.data.letters.push({
+        letter_id: uid('LT'),
+        case_id: cas.case_id,
+        contenido_carta: '',
+        estado_carta: ['Aprobado','Correo enviado','Impresa','En sobre','Coordinado con mensajería','Entregado','Cerrado'].includes(estado) ? 'Aprobada' : 'Borrador',
+        aprobado_por: ['Aprobado','Correo enviado','Impresa','En sobre','Coordinado con mensajería','Entregado','Cerrado'].includes(estado) ? cas.responsable : null,
+        fecha_aprobacion: ['Aprobado','Correo enviado','Impresa','En sobre','Coordinado con mensajería','Entregado','Cerrado'].includes(estado) ? fOf.toISOString() : null,
+        correo_enviado_a: ['Correo enviado','Impresa','En sobre','Coordinado con mensajería','Entregado','Cerrado'].includes(estado) ? 'horacioanel@gmail.com' : null,
+        created_at: fOf.toISOString(),
+        updated_at: fOf.toISOString()
+      });
+    }
+    if (estado === 'Rechazado' || estado === 'En revisión manual' || estado === 'Sin datos encontrados') {
+      const motivos = ['Datos insuficientes','El periodo seleccionado es incorrecto','La información encontrada no responde completamente el oficio','Requiere análisis legal adicional','La carta debe ser ajustada manualmente'];
+      State.data.manualCases.push({
+        manual_case_id: uid('MC'),
+        case_id: cas.case_id,
+        motivo_rechazo: estado === 'Sin datos encontrados' ? 'No se encontraron datos para el celular consultado' : randomFromArr(motivos),
+        comentario_usuario: 'Caso enviado a tratamiento manual para revisión por el equipo legal.',
+        rechazado_por: cas.responsable,
+        responsable_asignado: randomFromArr(['Mariana Vargas','Diego Solís','Laura Vega']),
+        estado_manual: estado === 'En revisión manual' ? 'En revisión' : 'Pendiente',
+        comentarios_legales: '',
+        created_at: fOf.toISOString(),
+        updated_at: fOf.toISOString()
+      });
+    }
+  }
+
+  persist();
+}
+
+/* =====================================================
+   AUTH
+===================================================== */
+function showAuthForm(which) {
+  ['login','signup','otp'].forEach(f => {
+    document.getElementById('form-'+f).classList.toggle('hidden', f!==which);
+  });
+  ['login-alert','signup-alert','otp-alert'].forEach(id => document.getElementById(id).innerHTML='');
+}
+
+async function doSignup() {
+  const name = document.getElementById('signup-name').value.trim();
+  const email = document.getElementById('signup-email').value.trim().toLowerCase();
+  const pwd = document.getElementById('signup-password').value;
+  const role = document.getElementById('signup-role').value;
+  const alertEl = document.getElementById('signup-alert');
+  alertEl.innerHTML = '';
+
+  if (!name || !email || !pwd) {
+    alertEl.innerHTML = '<div class="alert error">Complete todos los campos.</div>'; return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    alertEl.innerHTML = '<div class="alert error">Email no válido.</div>'; return;
+  }
+  if (pwd.length < 8) {
+    alertEl.innerHTML = '<div class="alert error">Contraseña mínima de 8 caracteres.</div>'; return;
+  }
+  if (State.appUsers.some(u => u.email === email)) {
+    alertEl.innerHTML = '<div class="alert error">Ya existe una cuenta con ese email. Inicie sesión.</div>'; return;
+  }
+  const hash = await sha256(pwd);
+  const otp = genOTP();
+  const expires = new Date(Date.now() + 10*60*1000).toISOString();
+
+  State.pendingSignup = {
+    app_user_id: uid('AU'),
+    nombre: name, email, password_hash: hash, rol: role,
+    otp_code: otp, otp_expires_at: expires,
+    email_verified: false, estado: 'pendiente_verificacion',
+    created_at: nowISO(), updated_at: nowISO()
+  };
+  await sendEmail(email, 'Su código de verificación Yappy Oficios AI',
+    `Hola ${name},\n\nSu código de verificación es: ${otp}\n\nVálido por 10 minutos.\n\n— Yappy Oficios AI`);
+
+  document.getElementById('otp-email-display').textContent = email;
+  document.getElementById('otp-demo-code').innerHTML = '<code>'+otp+'</code>';
+  showAuthForm('otp');
+  document.getElementById('otp-0').focus();
+}
+
+async function doVerifyOtp() {
+  const code = ['otp-0','otp-1','otp-2','otp-3','otp-4','otp-5'].map(id => document.getElementById(id).value).join('');
+  const alertEl = document.getElementById('otp-alert');
+  alertEl.innerHTML = '';
+  if (!State.pendingSignup) { alertEl.innerHTML = '<div class="alert error">Sesión de registro perdida. Reinicie.</div>'; return; }
+  if (code.length !== 6) { alertEl.innerHTML = '<div class="alert error">Ingrese los 6 dígitos.</div>'; return; }
+  if (new Date() > new Date(State.pendingSignup.otp_expires_at)) {
+    alertEl.innerHTML = '<div class="alert error">Código expirado. Reenvíelo.</div>'; return;
+  }
+  if (code !== State.pendingSignup.otp_code) {
+    alertEl.innerHTML = '<div class="alert error">Código incorrecto.</div>'; return;
+  }
+  const u = State.pendingSignup;
+  u.email_verified = true; u.estado = 'activo'; u.otp_code = null;
+  State.appUsers.push(u);
+  State.pendingSignup = null;
+  persist();
+  alertEl.innerHTML = '<div class="alert success">Cuenta activada. Iniciando sesión…</div>';
+  setTimeout(() => {
+    State.session = { ...u };
+    persist();
+    enterApp();
+  }, 700);
+}
+
+function resendOtp() {
+  if (!State.pendingSignup) return;
+  const otp = genOTP();
+  State.pendingSignup.otp_code = otp;
+  State.pendingSignup.otp_expires_at = new Date(Date.now()+10*60*1000).toISOString();
+  document.getElementById('otp-demo-code').innerHTML = '<code>'+otp+'</code>';
+  sendEmail(State.pendingSignup.email, 'Nuevo código OTP - Yappy Oficios AI',
+    `Su nuevo código es: ${otp}\n\n— Yappy Oficios AI`);
+  document.getElementById('otp-alert').innerHTML = '<div class="alert info">Se reenvió el código.</div>';
+}
+
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim().toLowerCase();
+  const pwd = document.getElementById('login-password').value;
+  const alertEl = document.getElementById('login-alert');
+  alertEl.innerHTML = '';
+  const user = State.appUsers.find(u => u.email === email);
+  if (!user) { alertEl.innerHTML = '<div class="alert error">Cuenta no encontrada.</div>'; return; }
+  if (!user.email_verified) { alertEl.innerHTML = '<div class="alert error">Email no verificado.</div>'; return; }
+  const hash = await sha256(pwd);
+  if (user.password_hash !== hash) { alertEl.innerHTML = '<div class="alert error">Credenciales incorrectas.</div>'; return; }
+  State.session = { ...user };
+  persist();
+  enterApp();
+}
+
+function doLogout() {
+  audit('', 'Logout', 'activo', 'sesion_cerrada', 'Usuario cerró sesión');
+  State.session = null; persist();
+  document.getElementById('app-screen').classList.add('hidden');
+  document.getElementById('auth-screen').classList.remove('hidden');
+  showAuthForm('login');
+}
+
+function otpHop(i) {
+  const cur = document.getElementById('otp-'+i);
+  if (cur.value && i<5) document.getElementById('otp-'+(i+1)).focus();
+}
+
+/* =====================================================
+   EMAIL DELIVERY
+===================================================== */
+async function sendEmail(to, subject, body) {
+  const msg = {
+    id: uid('MAIL'), to, from: State.smtp.from, subject, body, timestamp: nowISO(),
+    mode: State.smtp.mode, delivery: 'pending'
+  };
+  State.data.inbox.unshift(msg);
+  persist();
+
+  if (State.smtp.mode === 'api') {
+    // Producción: la función serverless /api/send-email gestiona Resend/Webhook.
+    // El navegador NUNCA conoce credenciales ni URLs sensibles.
+    try {
+      const r = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ to, subject, body })
+      });
+      const data = await r.json().catch(() => ({}));
+      if (r.ok) {
+        msg.delivery = 'enviado vía ' + (data.provider || 'api');
+      } else if (r.status === 503 && data.simulated) {
+        msg.delivery = 'simulado (sin proveedor configurado)';
+      } else {
+        msg.delivery = 'falló (' + (data.error || r.status) + ')';
+      }
+    } catch(e) {
+      msg.delivery = 'falló (' + e.message + ')';
+    }
+  } else if (State.smtp.mode === 'webhook' && State.smtp.webhookUrl) {
+    // Legacy local: webhook directo desde el navegador (NO recomendado en prod).
+    try {
+      const r = await fetch(State.smtp.webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ to, from: State.smtp.from, subject, body })
+      });
+      msg.delivery = r.ok ? 'enviado (webhook directo)' : ('falló ('+r.status+')');
+    } catch(e) {
+      msg.delivery = 'falló (' + e.message + ')';
+    }
+  } else if (State.smtp.mode === 'smtp') {
+    msg.delivery = 'configurado SMTP — requiere backend para envío real';
+  } else {
+    msg.delivery = 'simulado';
+  }
+  persist();
+  return msg;
+}
+
+/* =====================================================
+   ENTER APP & ROUTING
+===================================================== */
+function enterApp() {
+  document.getElementById('auth-screen').classList.add('hidden');
+  document.getElementById('app-screen').classList.remove('hidden');
+  const u = State.session;
+  document.getElementById('user-name').textContent = u.nombre;
+  document.getElementById('user-email').textContent = u.email;
+  document.getElementById('user-role').textContent = u.rol;
+  document.getElementById('user-avatar').textContent = (u.nombre[0]||'?').toUpperCase();
+  audit('', 'Login exitoso', '', 'sesion_iniciada', 'Inicio de sesión');
+  navigate('dashboard');
+}
+
+function navigate(route) {
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.route===route));
+  const titles = {
+    dashboard:'Dashboard', register:'Registrar oficio', cases:'Bandeja de oficios',
+    detail:'Detalle del caso', validation:'Validación de cartas', manual:'Tratamiento manual',
+    history:'Historial de respuestas', audit:'Bitácora', map:'Mapa del proceso',
+    users:'Usuarios y roles', settings:'Configuración', inbox:'Bandeja correo (demo)'
+  };
+  document.getElementById('topbar-title').textContent = titles[route] || route;
+  const view = document.getElementById('view');
+  view.innerHTML = '';
+  switch(route) {
+    case 'dashboard': renderDashboard(view); break;
+    case 'register': renderRegister(view); break;
+    case 'cases': renderCases(view); break;
+    case 'validation': renderValidation(view); break;
+    case 'manual': renderManual(view); break;
+    case 'history': renderHistory(view); break;
+    case 'audit': renderAudit(view); break;
+    case 'map': renderMap(view); break;
+    case 'users': renderUsers(view); break;
+    case 'settings': renderSettings(view); break;
+    case 'inbox': renderInbox(view); break;
+    default: renderDashboard(view);
+  }
+}
+
+document.addEventListener('click', (e) => {
+  const navBtn = e.target.closest('.nav-item');
+  if (navBtn) navigate(navBtn.dataset.route);
+});
+
+/* =====================================================
+   DASHBOARD
+===================================================== */
+function renderDashboard(view) {
+  const cs = State.data.cases;
+  const apr = cs.filter(c => ['Aprobado','Correo enviado','Impresa','En sobre','Coordinado con mensajería','Entregado','Cerrado'].includes(c.estado)).length;
+  const pen = cs.filter(c => ['Pendiente de validación','Carta generada','Resultado encontrado','Pendiente de búsqueda','Buscando en base de datos','Registrado manualmente'].includes(c.estado)).length;
+  const rec = cs.filter(c => c.estado === 'Rechazado').length;
+  const man = State.data.manualCases.length;
+  const sin = cs.filter(c => c.estado === 'Sin datos encontrados').length;
+  const cartas = State.data.letters.length;
+  const correos = State.data.inbox.filter(m => m.subject.includes('Carta de respuesta aprobada')).length;
+  const totalApr = apr + cs.filter(c=>c.estado==='Cerrado').length;
+  const tasaAuto = cs.length ? Math.round((apr/cs.length)*100) : 0;
+
+  // Casos por entidad
+  const porEntidad = {};
+  cs.forEach(c => porEntidad[c.entidad] = (porEntidad[c.entidad]||0)+1);
+  // Casos por tipo
+  const porTipo = {};
+  cs.forEach(c => porTipo[c.tipo_solicitud] = (porTipo[c.tipo_solicitud]||0)+1);
+  // Estados
+  const porEstado = {};
+  cs.forEach(c => porEstado[c.estado] = (porEstado[c.estado]||0)+1);
+
+  view.innerHTML = `
+    <h2 class="page-title">Resumen ejecutivo</h2>
+    <div class="page-sub">Visión consolidada del proceso de respuesta a oficios legales.</div>
+
+    <div class="kpi-grid">
+      <div class="kpi accent-blue"><div class="label">Oficios totales</div><div class="value">${cs.length}</div><div class="delta">Históricos en sistema</div></div>
+      <div class="kpi accent-orange"><div class="label">Pendientes</div><div class="value">${pen}</div><div class="delta">En flujo automático</div></div>
+      <div class="kpi accent-green"><div class="label">Aprobados</div><div class="value">${apr}</div><div class="delta">${tasaAuto}% automatización</div></div>
+      <div class="kpi accent-red"><div class="label">Rechazados</div><div class="value">${rec}</div><div class="delta">Enviados a manual</div></div>
+      <div class="kpi"><div class="label">Tratamiento manual</div><div class="value">${man}</div><div class="delta">En atención legal</div></div>
+      <div class="kpi"><div class="label">Sin datos</div><div class="value">${sin}</div><div class="delta">Celular no encontrado</div></div>
+      <div class="kpi"><div class="label">Cartas generadas</div><div class="value">${cartas}</div><div class="delta">Borradores + aprobadas</div></div>
+      <div class="kpi"><div class="label">Correos enviados</div><div class="value">${correos}</div><div class="delta">Notificación al responsable</div></div>
+    </div>
+
+    <div class="dashboard-grid">
+      <div class="card">
+        <div class="card-head"><h3>Casos por estado</h3><span class="muted">${cs.length} oficios</span></div>
+        <div class="card-body"><canvas id="ch-status" height="220"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>Casos por entidad</h3></div>
+        <div class="card-body"><canvas id="ch-entity" height="220"></canvas></div>
+      </div>
+    </div>
+
+    <div class="card mt-20">
+      <div class="card-head"><h3>Casos por tipo de solicitud</h3></div>
+      <div class="card-body"><canvas id="ch-type" height="120"></canvas></div>
+    </div>
+
+    <div class="card mt-20">
+      <div class="card-head">
+        <h3>Actividad reciente</h3>
+        <button class="btn btn-ghost" onclick="navigate('audit')">Ver bitácora →</button>
+      </div>
+      <div class="card-body">
+        <div class="timeline">
+          ${State.data.auditLogs.slice(0,8).map(l => `
+            <div class="tl-item ${l.accion.includes('Login')?'blue':l.accion.includes('Aprob')?'green':l.accion.includes('Rechaz')?'red':''}">
+              <div class="tl-time">${fmtDateTime(l.fecha_hora)} · ${l.usuario}</div>
+              <div class="tl-msg"><b>${l.accion}</b> ${l.case_id ? '· '+l.case_id : ''} ${l.estado_anterior?'<span class="chip">'+l.estado_anterior+'</span> → ':''}<span class="chip">${l.estado_nuevo||'—'}</span></div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Charts
+  setTimeout(()=>{
+    const colors = ['#003DA5','#FF6A13','#1B9E5A','#D6336C','#1A5BB8','#E0A800','#6E2EBF','#7A8DAF','#FF8A4D','#157C45','#B62558','#0E3D7C'];
+    new Chart(document.getElementById('ch-status'), {
+      type: 'doughnut',
+      data: { labels: Object.keys(porEstado), datasets: [{ data: Object.values(porEstado), backgroundColor: colors }] },
+      options: { plugins: { legend: { position: 'right', labels:{font:{size:11}} } } }
+    });
+    new Chart(document.getElementById('ch-entity'), {
+      type: 'bar',
+      data: { labels: Object.keys(porEntidad), datasets: [{ label:'Casos', data: Object.values(porEntidad), backgroundColor: '#003DA5' }] },
+      options: { plugins:{legend:{display:false}}, indexAxis:'y' }
+    });
+    new Chart(document.getElementById('ch-type'), {
+      type: 'bar',
+      data: { labels: Object.keys(porTipo), datasets: [{ label:'Casos', data: Object.values(porTipo), backgroundColor: '#FF6A13' }] },
+      options: { plugins:{legend:{display:false}} }
+    });
+  }, 60);
+}
+
+/* =====================================================
+   REGISTER OFICIO
+===================================================== */
+function renderRegister(view) {
+  const entidades = ['Ministerio Público','Fiscalía Anticorrupción','Fiscalía Contra el Crimen Organizado','Policía Nacional','Unidad de Análisis Financiero','Autoridad Judicial','Juzgado Penal','DIJ','Autoridad Nacional de Transparencia','Otra entidad'];
+  const tipos = ['Identificación del titular de un número celular','Detalle de transacciones realizadas','Detalle de transacciones recibidas','Identificación y transacciones del usuario','Relación con contrapartes','Información de registro en Yappy','Movimientos en un periodo específico','Otro tipo de solicitud'];
+  view.innerHTML = `
+    <h2 class="page-title">Registrar oficio</h2>
+    <div class="page-sub">Capture manualmente la información del oficio recibido. Tras guardar puede ejecutar la búsqueda automática en la base de datos.</div>
+    <div class="card">
+      <div class="card-body">
+        <div class="form-grid">
+          <div class="field-block">
+            <label>Entidad solicitante *</label>
+            <select id="r-entidad">${entidades.map(e=>`<option>${e}</option>`).join('')}</select>
+          </div>
+          <div class="field-block" id="r-otra-wrap" style="display:none">
+            <label>Nombre de la entidad *</label>
+            <input id="r-entidad-otra" placeholder="Ingrese la entidad">
+          </div>
+          <div class="field-block">
+            <label>Número de oficio *</label>
+            <input id="r-numero" placeholder="OF-2026-1234">
+          </div>
+          <div class="field-block">
+            <label>Fecha del oficio *</label>
+            <input id="r-fecha-oficio" type="date">
+          </div>
+          <div class="field-block">
+            <label>Fecha de recepción *</label>
+            <input id="r-fecha-rec" type="date" value="${new Date().toISOString().slice(0,10)}">
+          </div>
+          <div class="field-block">
+            <label>Celular consultado *</label>
+            <input id="r-celular" placeholder="60000001" maxlength="8">
+            <div class="hint">8 dígitos. Solo numérico.</div>
+          </div>
+          <div class="field-block">
+            <label>Tipo de solicitud *</label>
+            <select id="r-tipo">${tipos.map(t=>`<option>${t}</option>`).join('')}</select>
+          </div>
+          <div class="field-block">
+            <label>Fecha inicio del periodo *</label>
+            <input id="r-fini" type="date">
+          </div>
+          <div class="field-block">
+            <label>Fecha fin del periodo *</label>
+            <input id="r-ffin" type="date">
+          </div>
+          <div class="field-block">
+            <label>Responsable asignado</label>
+            <input id="r-resp" value="${State.session ? State.session.nombre : ''}">
+          </div>
+        </div>
+        <div class="field-block mt-20">
+          <label>Descripción / Texto libre del oficio</label>
+          <textarea id="r-desc" rows="4" placeholder="Resumen de la solicitud, observaciones u otros datos relevantes..."></textarea>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary" onclick="saveCase(true)">Guardar y buscar datos</button>
+          <button class="btn btn-secondary" onclick="saveCase(false)">Guardar oficio</button>
+          <button class="btn btn-ghost" onclick="navigate('cases')">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  `;
+  document.getElementById('r-entidad').addEventListener('change', (e) => {
+    document.getElementById('r-otra-wrap').style.display = e.target.value === 'Otra entidad' ? 'flex' : 'none';
+  });
+}
+
+function saveCase(autoSearch) {
+  const get = id => document.getElementById(id).value.trim();
+  let entidad = get('r-entidad');
+  if (entidad === 'Otra entidad') {
+    const other = get('r-entidad-otra');
+    if (!other) return toast('Indique el nombre de la entidad.', 'error', 'Validación');
+    entidad = other;
+  }
+  const numero = get('r-numero');
+  const fechaOf = get('r-fecha-oficio');
+  const fechaRec = get('r-fecha-rec');
+  const cel = get('r-celular');
+  const fIni = get('r-fini');
+  const fFin = get('r-ffin');
+  const tipo = get('r-tipo');
+  const desc = get('r-desc');
+  const resp = get('r-resp');
+
+  if (!entidad) return toast('Seleccione la entidad.', 'error', 'Validación');
+  if (!numero) return toast('Ingrese el número de oficio.', 'error', 'Validación');
+  if (!cel) return toast('Ingrese el celular consultado.', 'error', 'Validación');
+  if (!/^\d{7,8}$/.test(cel)) return toast('Celular debe tener 7-8 dígitos.', 'error', 'Validación');
+  if (!fIni || !fFin) return toast('Indique el rango de fechas.', 'error', 'Validación');
+  if (fFin < fIni) return toast('La fecha fin no puede ser menor que la inicio.', 'error', 'Validación');
+
+  const id = 'OF-' + String(State.data.cases.length+1).padStart(3,'0');
+  const caso = {
+    case_id: id,
+    numero_oficio: numero,
+    entidad,
+    fecha_recepcion: fechaRec,
+    fecha_oficio: fechaOf,
+    celular_consultado: cel,
+    fecha_inicio: fIni,
+    fecha_fin: fFin,
+    tipo_solicitud: tipo,
+    descripcion_solicitud: desc,
+    estado: 'Registrado manualmente',
+    responsable: resp || (State.session ? State.session.nombre : ''),
+    created_by: State.session.email,
+    created_at: nowISO(), updated_at: nowISO()
+  };
+  State.data.cases.unshift(caso);
+  audit(id, 'Caso registrado manualmente', '', 'Registrado manualmente', `Entidad: ${entidad}, oficio ${numero}`);
+  persist();
+
+  toast('Oficio registrado con ID '+id, 'success', 'Guardado');
+
+  if (autoSearch) {
+    runSearch(id, () => {
+      navigate('cases');
+      setTimeout(()=> openCaseDetail(id), 100);
+    });
+  } else {
+    navigate('cases');
+  }
+}
+
+/* =====================================================
+   SEARCH
+===================================================== */
+function runSearch(caseId, cb) {
+  const c = State.data.cases.find(x => x.case_id === caseId); if (!c) return;
+  c.estado = 'Buscando en base de datos'; c.updated_at = nowISO();
+  audit(caseId, 'Búsqueda automática iniciada', 'Registrado manualmente', 'Buscando en base de datos');
+  persist();
+
+  setTimeout(() => {
+    const userFound = State.data.users.find(u => u.celular === c.celular_consultado);
+    let result = {
+      result_id: uid('RES'), case_id: caseId,
+      user_id: userFound ? userFound.user_id : null,
+      celular: c.celular_consultado,
+      identificacion: userFound ? userFound.identificacion : null,
+      nombre_completo: userFound ? userFound.nombre_completo : null,
+      banco: userFound ? userFound.banco : null,
+      fecha_registro_yappy: userFound ? userFound.fecha_registro_yappy : null,
+      estado_usuario: userFound ? userFound.estado_usuario : null,
+      periodo_consultado: c.fecha_inicio + ' al ' + c.fecha_fin,
+      total_transacciones_enviadas: 0,
+      total_transacciones_recibidas: 0,
+      monto_total_enviado: 0, monto_total_recibido: 0,
+      detalle_transacciones_json: [],
+      resultado_encontrado: !!userFound,
+      created_at: nowISO()
+    };
+    if (userFound) {
+      const txs = State.data.transactions.filter(t =>
+        (t.sender_user_id === userFound.user_id || t.receiver_user_id === userFound.user_id) &&
+        t.fecha_transaccion >= c.fecha_inicio && t.fecha_transaccion <= c.fecha_fin
+      );
+      let env=0, rec=0, mE=0, mR=0;
+      txs.forEach(t => {
+        if (t.sender_user_id === userFound.user_id) { env++; mE += t.monto; }
+        else { rec++; mR += t.monto; }
+      });
+      result.total_transacciones_enviadas = env;
+      result.total_transacciones_recibidas = rec;
+      result.monto_total_enviado = Number(mE.toFixed(2));
+      result.monto_total_recibido = Number(mR.toFixed(2));
+      result.detalle_transacciones_json = txs;
+    }
+    State.data.caseResults = State.data.caseResults.filter(r => r.case_id !== caseId);
+    State.data.caseResults.unshift(result);
+
+    if (userFound) {
+      c.estado = 'Resultado encontrado';
+      audit(caseId, 'Búsqueda completada', 'Buscando en base de datos', 'Resultado encontrado',
+        `${result.total_transacciones_enviadas+result.total_transacciones_recibidas} transacciones encontradas`);
+      // Generar carta automáticamente como borrador
+      State.data.letters = State.data.letters.filter(l => l.case_id !== caseId);
+      State.data.letters.unshift({
+        letter_id: uid('LT'), case_id: caseId, contenido_carta: '',
+        estado_carta: 'Borrador', aprobado_por: null, fecha_aprobacion: null,
+        correo_enviado_a: null, created_at: nowISO(), updated_at: nowISO()
+      });
+      c.estado = 'Carta generada';
+      audit(caseId, 'Carta generada (borrador)', 'Resultado encontrado', 'Carta generada');
+      c.estado = 'Pendiente de validación';
+      audit(caseId, 'Pendiente de validación humana', 'Carta generada', 'Pendiente de validación');
+    } else {
+      c.estado = 'Sin datos encontrados';
+      audit(caseId, 'Sin datos encontrados', 'Buscando en base de datos', 'Sin datos encontrados',
+        `Celular ${c.celular_consultado} no existe en base de datos.`);
+      // Enviar a manual
+      State.data.manualCases.unshift({
+        manual_case_id: uid('MC'), case_id: caseId,
+        motivo_rechazo: 'Sin datos encontrados — el celular no está registrado en Yappy.',
+        comentario_usuario: 'Generado automáticamente por el sistema.',
+        rechazado_por: 'Sistema',
+        responsable_asignado: '— Por asignar —',
+        estado_manual: 'Pendiente',
+        comentarios_legales: '',
+        created_at: nowISO(), updated_at: nowISO()
+      });
+      audit(caseId, 'Enviado a tratamiento manual', 'Sin datos encontrados', 'En revisión manual');
+    }
+    c.updated_at = nowISO();
+    persist();
+    if (cb) cb();
+  }, 600);
+}
+
+/* =====================================================
+   CASES LIST
+===================================================== */
+function statusClass(s) {
+  if (['Aprobado','Correo enviado','Cerrado','Resultado encontrado','Entregado'].includes(s)) return 'green';
+  if (['Pendiente de validación','Carta generada','Buscando en base de datos','Pendiente de búsqueda','Registrado manualmente'].includes(s)) return 'orange';
+  if (['Rechazado','Sin datos encontrados'].includes(s)) return 'red';
+  if (['En revisión manual','Enviado a tratamiento manual'].includes(s)) return 'purple';
+  if (['Impresa','En sobre','Coordinado con mensajería','Impresión pendiente'].includes(s)) return 'blue';
+  return 'gray';
+}
+
+function renderCases(view) {
+  const entidades = [...new Set(State.data.cases.map(c => c.entidad))];
+  const estados = [...new Set(State.data.cases.map(c => c.estado))];
+  const tipos = [...new Set(State.data.cases.map(c => c.tipo_solicitud))];
+  view.innerHTML = `
+    <div class="flex justify-between items-center mb-12">
+      <div>
+        <h2 class="page-title">Bandeja de oficios</h2>
+        <div class="page-sub">${State.data.cases.length} oficios registrados.</div>
+      </div>
+      <button class="btn btn-orange" onclick="navigate('register')">+ Nuevo oficio</button>
+    </div>
+
+    <div class="card">
+      <div class="card-pad">
+        <div class="filters">
+          <select id="f-estado"><option value="">Todos los estados</option>${estados.map(e=>`<option>${e}</option>`).join('')}</select>
+          <select id="f-entidad"><option value="">Todas las entidades</option>${entidades.map(e=>`<option>${e}</option>`).join('')}</select>
+          <select id="f-tipo"><option value="">Todos los tipos</option>${tipos.map(t=>`<option>${t}</option>`).join('')}</select>
+          <input id="f-search" placeholder="Buscar por oficio, celular, responsable…">
+          <button class="btn btn-secondary" onclick="renderCasesTable()">Aplicar filtros</button>
+          <button class="btn btn-ghost" onclick="clearCaseFilters()">Limpiar</button>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table" id="cases-table">
+            <thead><tr>
+              <th>Caso</th><th>Oficio</th><th>Entidad</th><th>Recepción</th>
+              <th>Celular</th><th>Periodo</th><th>Tipo</th><th>Estado</th>
+              <th>Responsable</th><th>Acción</th>
+            </tr></thead>
+            <tbody id="cases-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  `;
+  renderCasesTable();
+}
+function clearCaseFilters() {
+  ['f-estado','f-entidad','f-tipo','f-search'].forEach(id => document.getElementById(id).value='');
+  renderCasesTable();
+}
+function renderCasesTable() {
+  const fE = document.getElementById('f-estado').value;
+  const fEn = document.getElementById('f-entidad').value;
+  const fT = document.getElementById('f-tipo').value;
+  const fS = document.getElementById('f-search').value.toLowerCase();
+  const filtered = State.data.cases.filter(c => {
+    if (fE && c.estado !== fE) return false;
+    if (fEn && c.entidad !== fEn) return false;
+    if (fT && c.tipo_solicitud !== fT) return false;
+    if (fS) {
+      const blob = (c.case_id+' '+c.numero_oficio+' '+c.celular_consultado+' '+c.responsable).toLowerCase();
+      if (!blob.includes(fS)) return false;
+    }
+    return true;
+  });
+  const tbody = document.getElementById('cases-tbody');
+  if (!filtered.length) { tbody.innerHTML = '<tr><td colspan="10" class="muted" style="text-align:center;padding:30px">Sin resultados</td></tr>'; return; }
+  tbody.innerHTML = filtered.map(c => `
+    <tr class="row-link" onclick="openCaseDetail('${c.case_id}')">
+      <td><b>${c.case_id}</b></td>
+      <td>${c.numero_oficio}</td>
+      <td>${c.entidad}</td>
+      <td>${fmtDate(c.fecha_recepcion)}</td>
+      <td>${c.celular_consultado}</td>
+      <td><small>${c.fecha_inicio} → ${c.fecha_fin}</small></td>
+      <td><small>${c.tipo_solicitud}</small></td>
+      <td><span class="status ${statusClass(c.estado)}">${c.estado}</span></td>
+      <td>${c.responsable||'—'}</td>
+      <td><button class="btn btn-ghost" onclick="event.stopPropagation();openCaseDetail('${c.case_id}')">Ver →</button></td>
+    </tr>
+  `).join('');
+}
+
+/* =====================================================
+   CASE DETAIL
+===================================================== */
+let currentCaseId = null;
+function openCaseDetail(id) {
+  currentCaseId = id;
+  document.getElementById('topbar-title').textContent = 'Detalle del caso · ' + id;
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  renderCaseDetail(document.getElementById('view'), id);
+}
+function renderCaseDetail(view, id) {
+  const c = State.data.cases.find(x => x.case_id === id);
+  if (!c) { view.innerHTML = '<div class="card card-body">Caso no encontrado.</div>'; return; }
+  const r = State.data.caseResults.find(x => x.case_id === id);
+  const letter = State.data.letters.find(x => x.case_id === id);
+  const logs = State.data.auditLogs.filter(l => l.case_id === id).sort((a,b)=> new Date(b.fecha_hora)-new Date(a.fecha_hora));
+  const manual = State.data.manualCases.find(m => m.case_id === id);
+
+  const isAutoStates = ['Pendiente de validación','Carta generada'].includes(c.estado);
+  const showApprove = isAutoStates;
+  const showOpsFlow = ['Aprobado','Correo enviado','Impresión pendiente','Impresa','En sobre','Coordinado con mensajería','Entregado'].includes(c.estado);
+
+  const entityHtml = `
+    <div class="card">
+      <div class="card-head"><h3>📄 Información del oficio</h3>
+        <span class="status ${statusClass(c.estado)}">${c.estado}</span>
+      </div>
+      <div class="card-body">
+        <div class="kv">
+          <div class="k">ID del caso</div><div class="v">${c.case_id}</div>
+          <div class="k">Número de oficio</div><div class="v">${c.numero_oficio}</div>
+          <div class="k">Entidad</div><div class="v">${c.entidad}</div>
+          <div class="k">Fecha del oficio</div><div class="v">${fmtDate(c.fecha_oficio)}</div>
+          <div class="k">Fecha recepción</div><div class="v">${fmtDate(c.fecha_recepcion)}</div>
+          <div class="k">Tipo de solicitud</div><div class="v">${c.tipo_solicitud}</div>
+          <div class="k">Celular consultado</div><div class="v"><b>${c.celular_consultado}</b></div>
+          <div class="k">Periodo solicitado</div><div class="v">${c.fecha_inicio} → ${c.fecha_fin}</div>
+          <div class="k">Responsable</div><div class="v">${c.responsable||'—'}</div>
+          <div class="k">Registrado por</div><div class="v">${c.created_by||'—'}</div>
+        </div>
+        ${c.descripcion_solicitud ? `<div class="divider"></div><div class="k" style="font-size:11.5px;color:var(--yappy-muted);text-transform:uppercase;letter-spacing:.3px">Descripción</div><div class="v">${c.descripcion_solicitud}</div>` : ''}
+        ${c.estado === 'Registrado manualmente' || c.estado === 'Pendiente de búsqueda' ? `
+          <div class="form-actions">
+            <button class="btn btn-primary" onclick="runSearch('${c.case_id}', ()=>openCaseDetail('${c.case_id}'))">🔍 Ejecutar búsqueda automática</button>
+          </div>
+        ` : ''}
+      </div>
+    </div>
+  `;
+
+  let resultHtml = '';
+  if (r && r.resultado_encontrado) {
+    resultHtml = `
+      <div class="card mt-20">
+        <div class="card-head"><h3>🔍 Resultado encontrado</h3><span class="tag-info">Coincidencia confirmada</span></div>
+        <div class="card-body">
+          <h4 style="margin:0 0 10px;font-size:13px;color:var(--yappy-muted);text-transform:uppercase;letter-spacing:.3px;">Datos del usuario Yappy</h4>
+          <div class="kv mb-12">
+            <div class="k">Identificación</div><div class="v">${r.identificacion||'—'}</div>
+            <div class="k">Nombre completo</div><div class="v">${r.nombre_completo||'—'}</div>
+            <div class="k">Banco</div><div class="v">${r.banco||'—'}</div>
+            <div class="k">Fecha registro Yappy</div><div class="v">${fmtDate(r.fecha_registro_yappy)}</div>
+            <div class="k">Estado del usuario</div><div class="v">${r.estado_usuario||'—'}</div>
+            <div class="k">Periodo consultado</div><div class="v">${r.periodo_consultado}</div>
+          </div>
+          <div class="divider"></div>
+          <h4 style="margin:0 0 10px;font-size:13px;color:var(--yappy-muted);text-transform:uppercase;letter-spacing:.3px;">Resumen de transacciones</h4>
+          <div class="kpi-grid" style="margin:0">
+            <div class="kpi accent-green"><div class="label">Enviadas</div><div class="value">${r.total_transacciones_enviadas}</div><div class="delta">${fmtMoney(r.monto_total_enviado)}</div></div>
+            <div class="kpi accent-blue"><div class="label">Recibidas</div><div class="value">${r.total_transacciones_recibidas}</div><div class="delta">${fmtMoney(r.monto_total_recibido)}</div></div>
+            <div class="kpi"><div class="label">Total transacciones</div><div class="value">${r.total_transacciones_enviadas+r.total_transacciones_recibidas}</div></div>
+            <div class="kpi"><div class="label">Monto total</div><div class="value">${fmtMoney(r.monto_total_enviado+r.monto_total_recibido)}</div></div>
+          </div>
+          ${r.detalle_transacciones_json.length ? `
+            <details class="mt-12"><summary style="cursor:pointer;font-weight:600;color:var(--yappy-blue)">Ver detalle de ${r.detalle_transacciones_json.length} transacciones</summary>
+            <div class="table-wrap mt-12">
+              <table class="data-table">
+                <thead><tr><th>ID</th><th>Fecha</th><th>Hora</th><th>Tipo</th><th>Contraparte</th><th class="num">Monto</th><th>Estado</th></tr></thead>
+                <tbody>
+                  ${r.detalle_transacciones_json.map(t => {
+                    const esEnv = t.sender_user_id === r.user_id;
+                    const cp = esEnv ? `${t.receiver_nombre} (${t.receiver_celular})` : `${t.sender_nombre} (${t.sender_celular})`;
+                    return `<tr><td>${t.transaction_id}</td><td>${t.fecha_transaccion}</td><td>${t.hora_transaccion}</td><td>${esEnv?'↗ '+t.tipo_transaccion:'↘ '+t.tipo_transaccion}</td><td>${cp}</td><td class="num">${fmtMoney(t.monto)}</td><td><span class="status ${t.estado_transaccion==='Exitosa'?'green':t.estado_transaccion==='Rechazada'?'red':'orange'}">${t.estado_transaccion}</span></td></tr>`;
+                  }).join('')}
+                </tbody>
+              </table>
+            </div></details>
+          ` : '<div class="muted mt-12">Sin transacciones en el periodo solicitado.</div>'}
+        </div>
+      </div>
+    `;
+  } else if (r && !r.resultado_encontrado) {
+    resultHtml = `
+      <div class="card mt-20">
+        <div class="card-head"><h3>🔍 Resultado de búsqueda</h3><span class="status red">Sin datos</span></div>
+        <div class="card-body">
+          <p>El celular <b>${r.celular}</b> no se encontró en la base de datos de usuarios Yappy. El caso se envió a la bandeja de tratamiento manual para análisis del equipo legal.</p>
+        </div>
+      </div>
+    `;
+  }
+
+  // Letter
+  let letterHtml = '';
+  if (letter || c.estado === 'Pendiente de validación' || c.estado === 'Carta generada' || showOpsFlow) {
+    letterHtml = `<div class="card mt-20">
+      <div class="card-head"><h3>📝 Carta de respuesta</h3>
+        ${letter ? `<span class="status ${letter.estado_carta==='Aprobada'?'green':'orange'}">${letter.estado_carta}</span>` : ''}
+      </div>
+      <div class="card-body" id="letter-container">${renderLetter(c, r, letter)}</div>
+    </div>`;
+  }
+
+  // Manual case
+  let manualHtml = '';
+  if (manual) {
+    manualHtml = `<div class="card mt-20">
+      <div class="card-head"><h3>⚖️ Tratamiento manual</h3><span class="status purple">${manual.estado_manual}</span></div>
+      <div class="card-body">
+        <div class="kv">
+          <div class="k">Motivo</div><div class="v">${manual.motivo_rechazo}</div>
+          <div class="k">Comentario</div><div class="v">${manual.comentario_usuario||'—'}</div>
+          <div class="k">Rechazado por</div><div class="v">${manual.rechazado_por}</div>
+          <div class="k">Asignado a</div><div class="v">${manual.responsable_asignado}</div>
+          <div class="k">Comentarios legales</div><div class="v">${manual.comentarios_legales||'<i class="muted">Sin comentarios aún</i>'}</div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-orange" onclick="openManualEdit('${manual.manual_case_id}')">Editar / Resolver</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // Operative flow
+  let opsHtml = '';
+  if (showOpsFlow) {
+    const stage = c.estado;
+    const order = ['Aprobado','Correo enviado','Impresión pendiente','Impresa','En sobre','Coordinado con mensajería','Entregado','Cerrado'];
+    const idx = order.indexOf(stage);
+    opsHtml = `<div class="card mt-20">
+      <div class="card-head"><h3>🚚 Flujo operativo posterior</h3></div>
+      <div class="card-body">
+        <div style="display:grid;grid-template-columns:repeat(${order.length},1fr);gap:6px;margin-bottom:14px;">
+          ${order.map((s,i)=>`<div style="text-align:center;font-size:11px;color:${i<=idx?'var(--yappy-blue)':'var(--yappy-muted)'};font-weight:${i<=idx?'700':'400'};padding:8px 4px;background:${i<=idx?'#E0EBF9':'#F4F6FB'};border-radius:6px;">${s}</div>`).join('')}
+        </div>
+        <div class="form-actions">
+          ${stage==='Aprobado' || stage==='Correo enviado' ? `<button class="btn btn-secondary" onclick="advanceOps('${c.case_id}','Impresión pendiente')">Marcar impresión pendiente</button>`:''}
+          ${stage==='Impresión pendiente' ? `<button class="btn btn-secondary" onclick="advanceOps('${c.case_id}','Impresa')">Marcar como Impresa</button>`:''}
+          ${stage==='Impresa' ? `<button class="btn btn-secondary" onclick="advanceOps('${c.case_id}','En sobre')">Colocar en sobre</button>`:''}
+          ${stage==='En sobre' ? `<button class="btn btn-secondary" onclick="advanceOps('${c.case_id}','Coordinado con mensajería')">Coordinar mensajería</button>`:''}
+          ${stage==='Coordinado con mensajería' ? `<button class="btn btn-secondary" onclick="advanceOps('${c.case_id}','Entregado')">Marcar como Entregado</button>`:''}
+          ${stage==='Entregado' ? `<button class="btn btn-success" onclick="advanceOps('${c.case_id}','Cerrado')">Cerrar caso</button>`:''}
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // Timeline
+  const tlHtml = `<div class="card mt-20">
+    <div class="card-head"><h3>🕒 Trazabilidad del caso</h3><span class="muted">${logs.length} eventos</span></div>
+    <div class="card-body">
+      <div class="timeline">
+        ${logs.map(l => `
+          <div class="tl-item ${l.accion.includes('Aprob')?'green':l.accion.includes('Rechaz')?'red':l.accion.includes('Búsqueda')?'blue':''}">
+            <div class="tl-time">${fmtDateTime(l.fecha_hora)} · ${l.usuario} <span class="chip">${l.rol}</span></div>
+            <div class="tl-msg"><b>${l.accion}</b> ${l.estado_anterior?'<span class="chip">'+l.estado_anterior+'</span> → ':''}<span class="chip">${l.estado_nuevo||'—'}</span></div>
+            ${l.comentario ? `<div class="muted" style="font-size:12px;margin-top:2px;">${l.comentario}</div>`:''}
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  </div>`;
+
+  view.innerHTML = `
+    <div class="flex justify-between items-center mb-12">
+      <button class="btn btn-ghost" onclick="navigate('cases')">← Volver a la bandeja</button>
+      <div class="flex gap-8">
+        <span class="muted">Última actualización: ${fmtDateTime(c.updated_at)}</span>
+      </div>
+    </div>
+    <div class="detail-grid">
+      <div>${entityHtml}${resultHtml}${letterHtml}${manualHtml}${opsHtml}</div>
+      <div>${tlHtml}</div>
+    </div>
+  `;
+}
+
+function advanceOps(caseId, next) {
+  const c = State.data.cases.find(x=>x.case_id===caseId); if(!c) return;
+  const prev = c.estado;
+  c.estado = next; c.updated_at = nowISO();
+  audit(caseId, 'Avance de flujo operativo', prev, next, '');
+  persist();
+  toast('Estado actualizado: '+next, 'success', 'Flujo operativo');
+  openCaseDetail(caseId);
+}
+
+/* =====================================================
+   LETTER RENDERING
+===================================================== */
+function letterContent(c, r) {
+  if (!c || !r || !r.resultado_encontrado) return '';
+  return `
+    <p>Panamá, ${fmtDate(c.fecha_recepcion)}</p>
+    <p><b>Señores</b><br>${c.entidad}<br>Presente.</p>
+    <p><b>Asunto:</b> Respuesta al oficio No. ${c.numero_oficio}</p>
+    <p>Estimados señores:</p>
+    <p>En atención al oficio No. <b>${c.numero_oficio}</b>, emitido por <b>${c.entidad}</b> con fecha ${fmtDate(c.fecha_oficio)}, mediante el cual se solicita información relacionada con el número celular <b>${c.celular_consultado}</b>, correspondiente al periodo comprendido entre <b>${c.fecha_inicio}</b> y <b>${c.fecha_fin}</b>, en relación con la solicitud de "<i>${c.tipo_solicitud}</i>", se informa lo siguiente:</p>
+
+    <h3 style="font-size:14px;margin:16px 0 6px;font-family:Inter">1. Información del titular</h3>
+    <table class="lt">
+      <tr><th style="width:40%">Identificación</th><td>${r.identificacion||'—'}</td></tr>
+      <tr><th>Nombre completo</th><td>${r.nombre_completo||'—'}</td></tr>
+      <tr><th>Celular registrado</th><td>${r.celular}</td></tr>
+      <tr><th>Banco</th><td>${r.banco||'—'}</td></tr>
+      <tr><th>Fecha registro Yappy</th><td>${fmtDate(r.fecha_registro_yappy)}</td></tr>
+      <tr><th>Estado del usuario</th><td>${r.estado_usuario||'—'}</td></tr>
+    </table>
+
+    <h3 style="font-size:14px;margin:16px 0 6px;font-family:Inter">2. Resumen de transacciones</h3>
+    <table class="lt">
+      <tr><th style="width:60%">Total transacciones enviadas</th><td>${r.total_transacciones_enviadas}</td></tr>
+      <tr><th>Monto total enviado</th><td>${fmtMoney(r.monto_total_enviado)}</td></tr>
+      <tr><th>Total transacciones recibidas</th><td>${r.total_transacciones_recibidas}</td></tr>
+      <tr><th>Monto total recibido</th><td>${fmtMoney(r.monto_total_recibido)}</td></tr>
+    </table>
+
+    ${r.detalle_transacciones_json && r.detalle_transacciones_json.length ? `
+    <h3 style="font-size:14px;margin:16px 0 6px;font-family:Inter">3. Detalle de transacciones (${r.detalle_transacciones_json.length})</h3>
+    <table class="lt">
+      <thead><tr><th>ID</th><th>Fecha</th><th>Tipo</th><th>Contraparte</th><th>Monto</th><th>Estado</th></tr></thead>
+      <tbody>
+        ${r.detalle_transacciones_json.slice(0,30).map(t => {
+          const esEnv = t.sender_user_id === r.user_id;
+          const cp = esEnv ? `${t.receiver_nombre} (${t.receiver_celular})` : `${t.sender_nombre} (${t.sender_celular})`;
+          return `<tr><td>${t.transaction_id}</td><td>${t.fecha_transaccion} ${t.hora_transaccion}</td><td>${esEnv?'Enviada':'Recibida'} · ${t.tipo_transaccion}</td><td>${cp}</td><td>${fmtMoney(t.monto)}</td><td>${t.estado_transaccion}</td></tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+    ${r.detalle_transacciones_json.length > 30 ? `<p style="font-family:Inter;font-size:12px;color:var(--yappy-muted)">Mostrando 30 de ${r.detalle_transacciones_json.length} transacciones.</p>` : ''}
+    ` : ''}
+
+    <h3 style="font-size:14px;margin:16px 0 6px;font-family:Inter">Observaciones</h3>
+    <p>La presente información se entrega en atención a su solicitud y se basa en los datos disponibles en los registros de Yappy en la fecha de consulta. Cualquier ampliación o aclaración adicional podrá ser solicitada por escrito.</p>
+
+    <p>Sin otro particular,</p>
+    <div class="sig">
+      <div>_______________________</div>
+      <div class="name">${c.responsable||'Responsable Legal'}</div>
+      <div>Equipo de Cumplimiento Legal · Yappy</div>
+      <div style="font-size:12px;color:var(--yappy-muted)">Caso: ${c.case_id} · Generado: ${fmtDateTime(nowISO())}</div>
+    </div>
+  `;
+}
+
+function renderLetter(c, r, letter) {
+  if (!letter) return '<div class="muted">No hay carta generada para este caso.</div>';
+  const draft = letter.estado_carta === 'Borrador';
+  const html = `
+    <div class="letter ${draft?'draft':''}">
+      ${draft ? '<div class="draft-note">⚠ BORRADOR - Pendiente de validación humana. La carta no se ha enviado todavía.</div>' : '<div class="draft-note" style="background:#D7F2E3;color:var(--yappy-success)">✓ Carta APROBADA por '+letter.aprobado_por+' el '+fmtDateTime(letter.fecha_aprobacion)+'. Correo enviado a '+(letter.correo_enviado_a||'—')+'.</div>'}
+      <h1>YAPPY · RESPUESTA A OFICIO LEGAL</h1>
+      <div class="small">Caso ${c.case_id} · Oficio ${c.numero_oficio}</div>
+      ${letterContent(c, r)}
+    </div>
+    ${draft ? `
+    <div class="form-actions">
+      <button class="btn btn-success" onclick="approveLetter('${c.case_id}')">✓ Aprobar y enviar correo</button>
+      <button class="btn btn-danger" onclick="openRejectModal('${c.case_id}')">✗ Rechazar carta</button>
+      <button class="btn btn-ghost" onclick="window.print()">🖨️ Imprimir vista</button>
+    </div>
+    ` : ''}
+  `;
+  return html;
+}
+
+async function approveLetter(caseId) {
+  const c = State.data.cases.find(x=>x.case_id===caseId);
+  const r = State.data.caseResults.find(x=>x.case_id===caseId);
+  const letter = State.data.letters.find(x=>x.case_id===caseId);
+  if (!c || !r || !letter) return;
+  if (!confirm('¿Confirmar aprobación de la carta? Se enviará un correo al usuario actual ('+State.session.email+').')) return;
+
+  const prev = c.estado;
+  letter.estado_carta = 'Aprobada';
+  letter.aprobado_por = State.session.nombre;
+  letter.fecha_aprobacion = nowISO();
+  letter.correo_enviado_a = State.session.email;
+  letter.contenido_carta = letterContent(c,r);
+  letter.updated_at = nowISO();
+
+  c.estado = 'Aprobado'; c.updated_at = nowISO();
+  audit(caseId, 'Carta aprobada', prev, 'Aprobado', 'Aprobado por ' + State.session.nombre);
+
+  // Send email
+  const subject = `Carta de respuesta aprobada - Oficio ${c.numero_oficio}`;
+  const body = `Estimado/a ${State.session.nombre},
+
+La carta de respuesta del caso ${c.case_id}, correspondiente al oficio ${c.numero_oficio} de ${c.entidad}, ha sido aprobada.
+
+Se incluye a continuación el contenido de la carta:
+
+${letterContent(c,r).replace(/<[^>]+>/g,'')}
+
+Estado actual: Lista para impresión y coordinación con mensajería.
+
+— Yappy Oficios AI`;
+
+  await sendEmail(State.session.email, subject, body);
+  c.estado = 'Correo enviado'; c.updated_at = nowISO();
+  audit(caseId, 'Correo enviado al responsable', 'Aprobado', 'Correo enviado', 'Destinatario: '+State.session.email);
+  c.estado = 'Impresión pendiente'; c.updated_at = nowISO();
+  audit(caseId, 'Lista para impresión', 'Correo enviado', 'Impresión pendiente');
+  persist();
+  toast('Carta aprobada y correo enviado a '+State.session.email, 'success', 'Aprobación');
+  openCaseDetail(caseId);
+}
+
+function openRejectModal(caseId) {
+  const motivos = ['Datos insuficientes','El celular no coincide con la solicitud','El periodo seleccionado es incorrecto','La respuesta requiere validación legal','La carta debe ser ajustada manualmente','La información encontrada no responde completamente el oficio','El caso requiere análisis adicional'];
+  showModal({
+    title: 'Rechazar carta · ' + caseId,
+    body: `
+      <div class="field-block">
+        <label>Motivo de rechazo *</label>
+        <select id="rj-motivo">${motivos.map(m=>`<option>${m}</option>`).join('')}</select>
+      </div>
+      <div class="field-block mt-12">
+        <label>Comentario *</label>
+        <textarea id="rj-comentario" rows="4" placeholder="Detalle del motivo de rechazo y acciones requeridas..."></textarea>
+      </div>
+      <div class="field-block mt-12">
+        <label>Asignar abogado responsable</label>
+        <select id="rj-responsable">
+          <option>Mariana Vargas</option>
+          <option>Diego Solís</option>
+          <option>Laura Vega</option>
+          <option>— Por asignar —</option>
+        </select>
+      </div>
+    `,
+    actions: [
+      { label: 'Cancelar', class: 'btn-secondary', onclick: closeModal },
+      { label: 'Confirmar rechazo', class: 'btn-danger', onclick: () => {
+        const motivo = document.getElementById('rj-motivo').value;
+        const com = document.getElementById('rj-comentario').value.trim();
+        const resp = document.getElementById('rj-responsable').value;
+        if (!com) { toast('El comentario es obligatorio.', 'error'); return; }
+        rejectLetter(caseId, motivo, com, resp);
+        closeModal();
+      }}
+    ]
+  });
+}
+
+function rejectLetter(caseId, motivo, comentario, responsable) {
+  const c = State.data.cases.find(x=>x.case_id===caseId);
+  const letter = State.data.letters.find(x=>x.case_id===caseId);
+  if (!c) return;
+  const prev = c.estado;
+  c.estado = 'Rechazado'; c.updated_at = nowISO();
+  if (letter) { letter.estado_carta = 'Rechazada'; letter.updated_at = nowISO(); }
+  audit(caseId, 'Carta rechazada', prev, 'Rechazado', `Motivo: ${motivo}. ${comentario}`);
+  State.data.manualCases.unshift({
+    manual_case_id: uid('MC'),
+    case_id: caseId,
+    motivo_rechazo: motivo,
+    comentario_usuario: comentario,
+    rechazado_por: State.session.nombre,
+    responsable_asignado: responsable,
+    estado_manual: 'Pendiente',
+    comentarios_legales: '',
+    created_at: nowISO(), updated_at: nowISO()
+  });
+  c.estado = 'Enviado a tratamiento manual'; c.updated_at = nowISO();
+  audit(caseId, 'Enviado a tratamiento manual', 'Rechazado', 'Enviado a tratamiento manual', `Asignado a: ${responsable}`);
+  c.estado = 'En revisión manual'; c.updated_at = nowISO();
+  audit(caseId, 'Asignado a abogado', 'Enviado a tratamiento manual', 'En revisión manual');
+  persist();
+  toast('Caso enviado a tratamiento manual.', 'warning', 'Rechazo registrado');
+  openCaseDetail(caseId);
+}
+
+/* =====================================================
+   VALIDATION QUEUE
+===================================================== */
+function renderValidation(view) {
+  const cs = State.data.cases.filter(c => ['Pendiente de validación','Carta generada'].includes(c.estado));
+  view.innerHTML = `
+    <h2 class="page-title">Validación de cartas</h2>
+    <div class="page-sub">Cartas en estado borrador, pendientes de aprobación humana.</div>
+    <div class="card">
+      <div class="card-pad">
+        ${cs.length===0 ? '<div class="muted" style="text-align:center;padding:30px">No hay cartas pendientes de validación.</div>' : `
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Caso</th><th>Oficio</th><th>Entidad</th><th>Celular</th><th>Periodo</th><th>Estado</th><th>Acción</th></tr></thead>
+            <tbody>
+              ${cs.map(c=>`
+                <tr class="row-link" onclick="openCaseDetail('${c.case_id}')">
+                  <td><b>${c.case_id}</b></td>
+                  <td>${c.numero_oficio}</td>
+                  <td>${c.entidad}</td>
+                  <td>${c.celular_consultado}</td>
+                  <td><small>${c.fecha_inicio} → ${c.fecha_fin}</small></td>
+                  <td><span class="status orange">${c.estado}</span></td>
+                  <td><button class="btn btn-primary" onclick="event.stopPropagation();openCaseDetail('${c.case_id}')">Revisar →</button></td>
+                </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>`}
+      </div>
+    </div>
+  `;
+}
+
+/* =====================================================
+   MANUAL CASES
+===================================================== */
+function renderManual(view) {
+  view.innerHTML = `
+    <h2 class="page-title">Tratamiento manual</h2>
+    <div class="page-sub">Casos rechazados o sin datos automáticos. Revisión por abogado/responsable legal.</div>
+    <div class="card">
+      <div class="card-pad">
+        ${State.data.manualCases.length===0 ? '<div class="muted" style="text-align:center;padding:30px">No hay casos en tratamiento manual.</div>' : `
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>ID Manual</th><th>Caso</th><th>Entidad</th><th>Celular</th><th>Motivo</th><th>Rechazado por</th><th>Asignado a</th><th>Estado</th><th>Fecha</th><th>Acción</th></tr></thead>
+            <tbody>
+              ${State.data.manualCases.map(m => {
+                const c = State.data.cases.find(x=>x.case_id===m.case_id) || {};
+                return `<tr>
+                  <td>${m.manual_case_id.slice(0,12)}…</td>
+                  <td><b>${m.case_id}</b></td>
+                  <td>${c.entidad||'—'}</td>
+                  <td>${c.celular_consultado||'—'}</td>
+                  <td><small>${m.motivo_rechazo}</small></td>
+                  <td>${m.rechazado_por}</td>
+                  <td>${m.responsable_asignado}</td>
+                  <td><span class="status ${m.estado_manual==='Resuelto'?'green':m.estado_manual==='En revisión'?'blue':'purple'}">${m.estado_manual}</span></td>
+                  <td><small>${fmtDateTime(m.created_at)}</small></td>
+                  <td><button class="btn btn-orange" onclick="openManualEdit('${m.manual_case_id}')">Revisar</button></td>
+                </tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>`}
+      </div>
+    </div>
+  `;
+}
+
+function openManualEdit(manualId) {
+  const m = State.data.manualCases.find(x=>x.manual_case_id===manualId);
+  if (!m) return;
+  showModal({
+    title: 'Tratamiento manual · ' + m.case_id,
+    body: `
+      <div class="kv mb-12">
+        <div class="k">Motivo</div><div class="v">${m.motivo_rechazo}</div>
+        <div class="k">Comentario inicial</div><div class="v">${m.comentario_usuario}</div>
+        <div class="k">Rechazado por</div><div class="v">${m.rechazado_por}</div>
+      </div>
+      <div class="field-block">
+        <label>Estado manual</label>
+        <select id="m-estado">
+          <option ${m.estado_manual==='Pendiente'?'selected':''}>Pendiente</option>
+          <option ${m.estado_manual==='En revisión'?'selected':''}>En revisión</option>
+          <option ${m.estado_manual==='Respuesta corregida'?'selected':''}>Respuesta corregida</option>
+          <option ${m.estado_manual==='Resuelto'?'selected':''}>Resuelto</option>
+        </select>
+      </div>
+      <div class="field-block mt-12">
+        <label>Responsable asignado</label>
+        <input id="m-resp" value="${m.responsable_asignado}">
+      </div>
+      <div class="field-block mt-12">
+        <label>Comentarios legales</label>
+        <textarea id="m-com" rows="4">${m.comentarios_legales||''}</textarea>
+      </div>
+    `,
+    actions: [
+      { label: 'Cancelar', class: 'btn-secondary', onclick: closeModal },
+      { label: 'Reenviar a validación', class: 'btn-orange', onclick: () => { resubmitManual(manualId); closeModal(); } },
+      { label: 'Guardar', class: 'btn-primary', onclick: () => { saveManual(manualId); closeModal(); } }
+    ]
+  });
+}
+
+function saveManual(manualId) {
+  const m = State.data.manualCases.find(x=>x.manual_case_id===manualId); if(!m) return;
+  const prev = m.estado_manual;
+  m.estado_manual = document.getElementById('m-estado').value;
+  m.responsable_asignado = document.getElementById('m-resp').value;
+  m.comentarios_legales = document.getElementById('m-com').value;
+  m.updated_at = nowISO();
+  audit(m.case_id, 'Actualización manual', prev, m.estado_manual, m.comentarios_legales);
+  if (m.estado_manual === 'Resuelto') {
+    const c = State.data.cases.find(x=>x.case_id===m.case_id);
+    if (c) {
+      const cprev = c.estado;
+      c.estado = 'Cerrado'; c.updated_at = nowISO();
+      audit(c.case_id, 'Caso cerrado tras tratamiento manual', cprev, 'Cerrado');
+    }
+  }
+  persist();
+  toast('Caso manual actualizado.', 'success');
+  navigate('manual');
+}
+
+function resubmitManual(manualId) {
+  const m = State.data.manualCases.find(x=>x.manual_case_id===manualId); if(!m) return;
+  const c = State.data.cases.find(x=>x.case_id===m.case_id);
+  if (!c) return;
+  const prev = c.estado;
+  c.estado = 'Pendiente de validación'; c.updated_at = nowISO();
+  m.estado_manual = 'Respuesta corregida'; m.updated_at = nowISO();
+  // Recreate letter as draft
+  let l = State.data.letters.find(x=>x.case_id===m.case_id);
+  if (!l) {
+    State.data.letters.unshift({ letter_id: uid('LT'), case_id: m.case_id, contenido_carta:'', estado_carta:'Borrador', aprobado_por:null, fecha_aprobacion:null, correo_enviado_a:null, created_at:nowISO(), updated_at:nowISO() });
+  } else {
+    l.estado_carta = 'Borrador'; l.aprobado_por=null; l.fecha_aprobacion=null; l.updated_at=nowISO();
+  }
+  audit(c.case_id, 'Reenviado a validación tras tratamiento manual', prev, 'Pendiente de validación', m.comentarios_legales);
+  persist();
+  toast('Caso reenviado a validación.', 'success');
+  navigate('validation');
+}
+
+/* =====================================================
+   HISTORY
+===================================================== */
+function renderHistory(view) {
+  const letters = State.data.letters.slice().sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+  view.innerHTML = `
+    <h2 class="page-title">Historial de respuestas</h2>
+    <div class="page-sub">${letters.length} cartas históricas. Filtre y consulte respuestas anteriores.</div>
+    <div class="card">
+      <div class="card-pad">
+        <div class="filters">
+          <input id="h-search" placeholder="Buscar por oficio, celular, identificación, ID, nombre…" style="flex:1">
+          <select id="h-estado">
+            <option value="">Todos los estados</option>
+            <option>Borrador</option><option>Aprobada</option><option>Rechazada</option>
+          </select>
+          <button class="btn btn-secondary" onclick="renderHistoryTable()">Filtrar</button>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Carta</th><th>Caso</th><th>Oficio</th><th>Entidad</th><th>Celular</th><th>Usuario Yappy</th><th>Estado</th><th>Aprobada por</th><th>Fecha</th><th>Acción</th></tr></thead>
+            <tbody id="h-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  `;
+  renderHistoryTable();
+}
+function renderHistoryTable() {
+  const fS = document.getElementById('h-search').value.toLowerCase();
+  const fE = document.getElementById('h-estado').value;
+  const tbody = document.getElementById('h-tbody');
+  const rows = State.data.letters.map(l => {
+    const c = State.data.cases.find(x=>x.case_id===l.case_id) || {};
+    const r = State.data.caseResults.find(x=>x.case_id===l.case_id) || {};
+    return { l, c, r };
+  }).filter(({l,c,r}) => {
+    if (fE && l.estado_carta !== fE) return false;
+    if (fS) {
+      const blob = ((c.numero_oficio||'')+' '+(c.celular_consultado||'')+' '+(c.case_id||'')+' '+(r.identificacion||'')+' '+(r.nombre_completo||'')+' '+(l.aprobado_por||'')).toLowerCase();
+      if (!blob.includes(fS)) return false;
+    }
+    return true;
+  });
+  if (!rows.length) { tbody.innerHTML = '<tr><td colspan="10" class="muted" style="text-align:center;padding:30px">Sin resultados</td></tr>'; return; }
+  tbody.innerHTML = rows.map(({l,c,r}) => `
+    <tr class="row-link" onclick="openCaseDetail('${l.case_id}')">
+      <td><small>${l.letter_id.slice(0,10)}…</small></td>
+      <td><b>${l.case_id}</b></td>
+      <td>${c.numero_oficio||'—'}</td>
+      <td>${c.entidad||'—'}</td>
+      <td>${c.celular_consultado||'—'}</td>
+      <td>${r.nombre_completo||'<span class="muted">No encontrado</span>'}</td>
+      <td><span class="status ${l.estado_carta==='Aprobada'?'green':l.estado_carta==='Rechazada'?'red':'orange'}">${l.estado_carta}</span></td>
+      <td>${l.aprobado_por||'—'}</td>
+      <td><small>${l.fecha_aprobacion?fmtDateTime(l.fecha_aprobacion):fmtDateTime(l.created_at)}</small></td>
+      <td><button class="btn btn-ghost" onclick="event.stopPropagation();openCaseDetail('${l.case_id}')">Ver carta →</button></td>
+    </tr>
+  `).join('');
+}
+
+/* =====================================================
+   AUDIT LOGS
+===================================================== */
+function renderAudit(view) {
+  view.innerHTML = `
+    <h2 class="page-title">Bitácora general</h2>
+    <div class="page-sub">${State.data.auditLogs.length} eventos registrados.</div>
+    <div class="card">
+      <div class="card-pad">
+        <div class="filters">
+          <input id="a-search" placeholder="Buscar por caso, usuario, acción..." style="flex:1">
+          <input id="a-from" type="date" placeholder="Desde">
+          <input id="a-to" type="date" placeholder="Hasta">
+          <button class="btn btn-secondary" onclick="renderAuditTable()">Filtrar</button>
+          <button class="btn btn-orange" onclick="exportAudit()">Exportar CSV</button>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Fecha</th><th>Caso</th><th>Usuario</th><th>Email</th><th>Rol</th><th>Acción</th><th>Anterior</th><th>Nuevo</th><th>Comentario</th><th>IP</th></tr></thead>
+            <tbody id="a-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  `;
+  renderAuditTable();
+}
+function renderAuditTable() {
+  const fS = (document.getElementById('a-search').value||'').toLowerCase();
+  const fF = document.getElementById('a-from').value;
+  const fT = document.getElementById('a-to').value;
+  const rows = State.data.auditLogs.filter(l => {
+    if (fS) {
+      const blob = ((l.case_id||'')+' '+(l.usuario||'')+' '+(l.accion||'')+' '+(l.estado_nuevo||'')+' '+(l.comentario||'')).toLowerCase();
+      if (!blob.includes(fS)) return false;
+    }
+    if (fF && l.fecha_hora.slice(0,10) < fF) return false;
+    if (fT && l.fecha_hora.slice(0,10) > fT) return false;
+    return true;
+  });
+  const tbody = document.getElementById('a-tbody');
+  if (!rows.length) { tbody.innerHTML='<tr><td colspan="10" class="muted" style="text-align:center;padding:30px">Sin resultados</td></tr>'; return; }
+  tbody.innerHTML = rows.slice(0,500).map(l => `
+    <tr>
+      <td><small>${fmtDateTime(l.fecha_hora)}</small></td>
+      <td>${l.case_id?`<a onclick="openCaseDetail('${l.case_id}')" style="cursor:pointer">${l.case_id}</a>`:'—'}</td>
+      <td>${l.usuario}</td>
+      <td><small>${l.email_usuario}</small></td>
+      <td><span class="chip">${l.rol}</span></td>
+      <td><b>${l.accion}</b></td>
+      <td><small>${l.estado_anterior||'—'}</small></td>
+      <td><small>${l.estado_nuevo||'—'}</small></td>
+      <td><small>${l.comentario||'—'}</small></td>
+      <td><small class="muted">${l.ip_simulada}</small></td>
+    </tr>
+  `).join('');
+}
+function exportAudit() {
+  const headers = ['log_id','case_id','fecha_hora','usuario','email_usuario','rol','accion','estado_anterior','estado_nuevo','comentario','resultado','canal','ip_simulada'];
+  const rows = [headers.join(',')].concat(State.data.auditLogs.map(l => headers.map(h => '"'+(l[h]||'').toString().replace(/"/g,'""')+'"').join(',')));
+  const blob = new Blob([rows.join('\n')], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'bitacora_'+new Date().toISOString().slice(0,10)+'.csv'; a.click();
+  URL.revokeObjectURL(url);
+  toast('Bitácora exportada.', 'success');
+}
+
+/* =====================================================
+   DOWNLOAD HELPERS (Yappy DB tables)
+===================================================== */
+function arrayToCSV(rows, headers) {
+  const escape = (v) => {
+    if (v === null || v === undefined) return '';
+    let s = typeof v === 'object' ? JSON.stringify(v) : String(v);
+    if (/[",\n\r]/.test(s)) s = '"' + s.replace(/"/g, '""') + '"';
+    return s;
+  };
+  const head = headers.map(escape).join(',');
+  const body = rows.map(r => headers.map(h => escape(r[h])).join(',')).join('\n');
+  return '﻿' + head + '\n' + body;
+}
+
+function triggerDownload(content, filename, mime) {
+  const blob = new Blob([content], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+}
+
+function downloadUsersCSV() {
+  const headers = ['user_id','identificacion','nombre','apellido','nombre_completo','celular','email','banco','fecha_registro_yappy','estado_usuario','tipo_usuario','created_at','updated_at'];
+  const csv = arrayToCSV(State.data.users, headers);
+  triggerDownload(csv, 'yappy_usuarios_'+new Date().toISOString().slice(0,10)+'.csv', 'text/csv;charset=utf-8');
+  audit('', 'Exportación de tabla', '', '', 'Descarga CSV de tabla users ('+State.data.users.length+' registros)');
+  persist();
+  toast('Descargado: yappy_usuarios.csv ('+State.data.users.length+' registros)', 'success', 'Exportación');
+}
+
+function downloadUsersJSON() {
+  const json = JSON.stringify(State.data.users, null, 2);
+  triggerDownload(json, 'yappy_usuarios_'+new Date().toISOString().slice(0,10)+'.json', 'application/json');
+  audit('', 'Exportación de tabla', '', '', 'Descarga JSON de tabla users ('+State.data.users.length+' registros)');
+  persist();
+  toast('Descargado: yappy_usuarios.json', 'success', 'Exportación');
+}
+
+function downloadTransactionsCSV() {
+  const headers = ['transaction_id','fecha_transaccion','hora_transaccion','sender_user_id','sender_celular','sender_nombre','receiver_user_id','receiver_celular','receiver_nombre','tipo_transaccion','monto','moneda','canal','estado_transaccion','descripcion','created_at'];
+  const csv = arrayToCSV(State.data.transactions, headers);
+  triggerDownload(csv, 'yappy_transacciones_'+new Date().toISOString().slice(0,10)+'.csv', 'text/csv;charset=utf-8');
+  audit('', 'Exportación de tabla', '', '', 'Descarga CSV de tabla transactions ('+State.data.transactions.length+' registros)');
+  persist();
+  toast('Descargado: yappy_transacciones.csv ('+State.data.transactions.length+' registros)', 'success', 'Exportación');
+}
+
+function downloadTransactionsJSON() {
+  const json = JSON.stringify(State.data.transactions, null, 2);
+  triggerDownload(json, 'yappy_transacciones_'+new Date().toISOString().slice(0,10)+'.json', 'application/json');
+  audit('', 'Exportación de tabla', '', '', 'Descarga JSON de tabla transactions ('+State.data.transactions.length+' registros)');
+  persist();
+  toast('Descargado: yappy_transacciones.json', 'success', 'Exportación');
+}
+
+function downloadAllTables() {
+  const dump = {
+    exported_at: nowISO(),
+    exported_by: State.session ? State.session.email : 'desconocido',
+    users: State.data.users,
+    transactions: State.data.transactions,
+    cases: State.data.cases,
+    case_results: State.data.caseResults,
+    letters: State.data.letters,
+    manual_cases: State.data.manualCases,
+    audit_logs: State.data.auditLogs
+  };
+  triggerDownload(JSON.stringify(dump, null, 2), 'yappy_oficios_dump_'+new Date().toISOString().slice(0,10)+'.json', 'application/json');
+  audit('', 'Exportación completa', '', '', 'Descarga de todas las tablas');
+  persist();
+  toast('Snapshot completo descargado.', 'success', 'Exportación');
+}
+
+function previewTable(which) {
+  const data = which === 'users' ? State.data.users : State.data.transactions;
+  const title = which === 'users' ? 'Vista previa · Tabla de usuarios Yappy' : 'Vista previa · Tabla de transacciones Yappy';
+  const headers = which === 'users'
+    ? ['user_id','identificacion','nombre_completo','celular','banco','fecha_registro_yappy','estado_usuario','tipo_usuario']
+    : ['transaction_id','fecha_transaccion','sender_celular','receiver_celular','tipo_transaccion','monto','estado_transaccion'];
+  const sample = data.slice(0, 25);
+  const body = `
+    <div class="muted" style="margin-bottom:10px;font-size:12.5px">Mostrando ${sample.length} de ${data.length} registros. La descarga incluye todos los campos.</div>
+    <div class="table-wrap" style="max-height:55vh;overflow:auto">
+      <table class="data-table">
+        <thead><tr>${headers.map(h=>'<th>'+h+'</th>').join('')}</tr></thead>
+        <tbody>
+          ${sample.map(r => '<tr>' + headers.map(h => {
+            const v = r[h];
+            if (h === 'monto') return '<td class="num">'+fmtMoney(v)+'</td>';
+            return '<td>'+(v == null ? '—' : String(v))+'</td>';
+          }).join('') + '</tr>').join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+  showModal({
+    title,
+    body,
+    actions: [
+      { label: 'Cerrar', class: 'btn-secondary', onclick: closeModal },
+      { label: 'Descargar CSV', class: 'btn-primary', onclick: () => {
+        if (which === 'users') downloadUsersCSV(); else downloadTransactionsCSV();
+        closeModal();
+      } }
+    ]
+  });
+}
+
+/* =====================================================
+   PROCESS MAP
+===================================================== */
+function renderMap(view) {
+  view.innerHTML = `
+    <h2 class="page-title">Mapa del proceso</h2>
+    <div class="page-sub">Vista visual del flujo completo, con bifurcaciones por aprobación, rechazo y casos sin datos.</div>
+    <div class="card">
+      <div class="card-body">
+        <div class="flowmap">
+          <div class="flow-row"><div class="flow-node start">📝 Registro manual del oficio</div></div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-row"><div class="flow-node">Selección de entidad</div></div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-row"><div class="flow-node">Captura de celular y rango de fechas</div></div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-row"><div class="flow-node">🔍 Búsqueda automática en base de datos</div></div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-row">
+            <div class="flow-node">Tabla usuarios</div>
+            <div class="flow-node">Tabla transacciones</div>
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-row"><div class="flow-node">Generación de resultado</div></div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-row"><div class="flow-node">📄 Generación de carta (borrador)</div></div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-row"><div class="flow-node decision"><span>Validación humana</span></div></div>
+          <div class="flow-row" style="margin-top:30px;">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:10px;flex:1">
+              <div style="font-size:12px;color:var(--yappy-success);font-weight:700;">✓ APROBADO</div>
+              <div class="flow-node end">📨 Correo enviado al responsable</div>
+              <div class="flow-arrow">↓</div>
+              <div class="flow-node">🖨 Impresión</div>
+              <div class="flow-arrow">↓</div>
+              <div class="flow-node">✉ Sobre</div>
+              <div class="flow-arrow">↓</div>
+              <div class="flow-node">📦 Mensajería</div>
+              <div class="flow-arrow">↓</div>
+              <div class="flow-node">📍 Entregado</div>
+              <div class="flow-arrow">↓</div>
+              <div class="flow-node end">🔒 Cierre</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:10px;flex:1">
+              <div style="font-size:12px;color:var(--yappy-danger);font-weight:700;">✗ RECHAZADO / SIN DATOS</div>
+              <div class="flow-node bad">⚖️ Tratamiento manual</div>
+              <div class="flow-arrow">↓</div>
+              <div class="flow-node">Asignado a abogado</div>
+              <div class="flow-arrow">↓</div>
+              <div class="flow-node">En revisión manual</div>
+              <div class="flow-arrow">↓</div>
+              <div class="flow-node">Respuesta corregida</div>
+              <div class="flow-arrow">↓</div>
+              <div class="flow-node">Reenvío a validación</div>
+              <div class="flow-arrow">↓</div>
+              <div class="flow-node end">🔒 Cierre</div>
+            </div>
+          </div>
+        </div>
+        <div class="divider mt-20"></div>
+        <h3 style="margin:0 0 8px;">Roles que intervienen</h3>
+        <div class="flex gap-12" style="flex-wrap:wrap">
+          <div class="kpi"><div class="label">Legal</div><div class="value" style="font-size:14px">Crea casos, aprueba/rechaza cartas</div></div>
+          <div class="kpi"><div class="label">Cumplimiento</div><div class="value" style="font-size:14px">Revisa datos, valida información</div></div>
+          <div class="kpi"><div class="label">Operaciones</div><div class="value" style="font-size:14px">Impresión, sobre, mensajería</div></div>
+          <div class="kpi"><div class="label">Abogado</div><div class="value" style="font-size:14px">Trabaja casos en tratamiento manual</div></div>
+          <div class="kpi"><div class="label">Admin</div><div class="value" style="font-size:14px">Configura sistema y usuarios</div></div>
+          <div class="kpi"><div class="label">Lector</div><div class="value" style="font-size:14px">Consulta histórico sin modificar</div></div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/* =====================================================
+   USERS & ROLES
+===================================================== */
+function renderUsers(view) {
+  view.innerHTML = `
+    <h2 class="page-title">Usuarios y roles</h2>
+    <div class="page-sub">Usuarios de la aplicación. ${State.appUsers.length} cuentas registradas.</div>
+    <div class="card">
+      <div class="card-pad">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Verificado</th><th>Estado</th><th>Creada</th></tr></thead>
+            <tbody>
+              ${State.appUsers.map(u => `
+                <tr>
+                  <td><b>${u.nombre}</b></td>
+                  <td>${u.email}</td>
+                  <td><span class="status ${u.rol==='admin'?'red':u.rol==='legal'?'blue':u.rol==='cumplimiento'?'purple':u.rol==='operaciones'?'orange':u.rol==='abogado'?'yellow':'gray'}">${u.rol}</span></td>
+                  <td>${u.email_verified?'<span class="status green">Verificado</span>':'<span class="status red">No verificado</span>'}</td>
+                  <td>${u.estado}</td>
+                  <td><small>${fmtDateTime(u.created_at)}</small></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mt-20">
+      <div class="card-head"><h3>Permisos por rol</h3></div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Rol</th><th>Crear oficios</th><th>Aprobar/Rechazar</th><th>Tratamiento manual</th><th>Operaciones</th><th>Configurar</th><th>Solo lectura</th></tr></thead>
+            <tbody>
+              <tr><td><b>Admin</b></td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>—</td></tr>
+              <tr><td><b>Legal</b></td><td>✓</td><td>✓</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+              <tr><td><b>Cumplimiento</b></td><td>✓</td><td>✓</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+              <tr><td><b>Operaciones</b></td><td>—</td><td>—</td><td>—</td><td>✓</td><td>—</td><td>—</td></tr>
+              <tr><td><b>Abogado</b></td><td>—</td><td>—</td><td>✓</td><td>—</td><td>—</td><td>—</td></tr>
+              <tr><td><b>Lector</b></td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✓</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="muted mt-12" style="font-size:12.5px">Nota: este prototipo registra el rol de cada usuario y muestra la matriz de permisos. La aplicación de permisos a nivel de UI puede activarse desde Configuración.</div>
+      </div>
+    </div>
+  `;
+}
+
+/* =====================================================
+   SETTINGS
+===================================================== */
+function renderSettings(view) {
+  const s = State.smtp;
+  view.innerHTML = `
+    <h2 class="page-title">Configuración</h2>
+    <div class="page-sub">Parámetros de envío de correos y opciones del sistema.</div>
+
+    <div class="card">
+      <div class="card-head"><h3>📨 Envío de correos (OTP y cartas aprobadas)</h3></div>
+      <div class="card-body">
+        <div class="field-block mb-12">
+          <label>Modo de envío</label>
+          <select id="s-mode">
+            <option value="api" ${s.mode==='api'?'selected':''}>API serverless (recomendado en producción)</option>
+            <option value="simulated" ${s.mode==='simulated'?'selected':''}>Simulado (bandeja interna)</option>
+            <option value="webhook" ${s.mode==='webhook'?'selected':''}>Webhook directo desde navegador (legacy local)</option>
+            <option value="smtp" ${s.mode==='smtp'?'selected':''}>SMTP (informativo, requiere backend propio)</option>
+          </select>
+          <div class="hint">
+            <b>API serverless</b> usa la ruta <code>/api/send-email</code> de Vercel; las credenciales viven solo en variables de entorno del servidor.
+            <b>Simulado</b> muestra los correos en la bandeja interna sin enviar nada.
+            <b>Webhook directo</b> ataca el webhook desde el navegador — solo desarrollo local, NO usar en producción porque la URL queda visible.
+          </div>
+        </div>
+
+        <div id="s-api-block" style="${s.mode==='api'?'':'display:none'}">
+          <div style="background:#E7F0FB;color:var(--yappy-blue);padding:10px 12px;border-radius:8px;font-size:13px;margin-bottom:12px;">
+            <b>Modo producción.</b> El frontend solo envía <code>{to, subject, body}</code>. La función serverless decide entre Resend o webhook según las env vars del proyecto en Vercel:
+            <ul style="margin:6px 0 0 18px;padding:0;">
+              <li><code>RESEND_API_KEY</code> — proveedor principal (recomendado)</li>
+              <li><code>MAKE_WEBHOOK_URL</code> — fallback si no hay Resend</li>
+              <li><code>MAIL_FROM</code> — remitente verificado</li>
+            </ul>
+          </div>
+        </div>
+
+        <div id="s-webhook-block" style="${s.mode==='webhook'?'':'display:none'}">
+          <div class="field-block">
+            <label>Webhook URL (HTTPS)</label>
+            <input id="s-webhook" value="${s.webhookUrl||''}" placeholder="https://hook.make.com/xxxxx">
+            <div class="hint">El webhook recibirá un POST JSON con <code>{to, from, subject, body}</code>.</div>
+          </div>
+        </div>
+
+        <div id="s-smtp-block" style="${s.mode==='smtp'?'':'display:none'}">
+          <div class="form-grid">
+            <div class="field-block"><label>SMTP Host</label><input id="s-host" value="${s.host||''}" placeholder="smtp.sendgrid.net"></div>
+            <div class="field-block"><label>SMTP Port</label><input id="s-port" value="${s.port||''}" placeholder="587"></div>
+            <div class="field-block"><label>SMTP User</label><input id="s-user" value="${s.user||''}"></div>
+            <div class="field-block"><label>SMTP Pass</label><input id="s-pass" type="password" value="${s.pass||''}"></div>
+          </div>
+          <div class="hint" style="font-size:12.5px;color:var(--yappy-warning);margin-top:8px">
+            ⚠ El navegador no puede abrir conexiones SMTP directamente. Estas credenciales se guardan localmente para que un backend o función serverless pueda leerlas; por seguridad use el modo <b>Webhook</b> en producción.
+          </div>
+        </div>
+
+        <div class="field-block mt-12">
+          <label>Remitente (From)</label>
+          <input id="s-from" value="${s.from||''}" placeholder="no-reply@yappy-oficios.local">
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-primary" onclick="saveSmtp()">Guardar configuración</button>
+          <button class="btn btn-secondary" onclick="testEmail()">Enviar correo de prueba</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mt-20">
+      <div class="card-head"><h3>Descargar tablas de la base de datos Yappy</h3></div>
+      <div class="card-body">
+        <p class="muted" style="margin-top:0">Exporte las tablas internas que alimentan la búsqueda automática. Datos ficticios.</p>
+        <div class="form-grid">
+          <div class="card" style="background:#FAFBFE;border:1px dashed var(--yappy-border);box-shadow:none">
+            <div class="card-pad">
+              <div class="flex justify-between items-center" style="margin-bottom:8px">
+                <h4 style="margin:0;font-size:14px">Tabla de usuarios Yappy</h4>
+                <span class="tag-info">${State.data.users.length} registros</span>
+              </div>
+              <div class="muted" style="font-size:12.5px;margin-bottom:12px">Identificación, nombre, celular, banco, fecha de registro, estado y tipo.</div>
+              <div class="flex gap-8" style="flex-wrap:wrap">
+                <button class="btn btn-primary" onclick="downloadUsersCSV()">Descargar CSV</button>
+                <button class="btn btn-secondary" onclick="downloadUsersJSON()">JSON</button>
+                <button class="btn btn-ghost" onclick="previewTable('users')">Vista previa</button>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="background:#FAFBFE;border:1px dashed var(--yappy-border);box-shadow:none">
+            <div class="card-pad">
+              <div class="flex justify-between items-center" style="margin-bottom:8px">
+                <h4 style="margin:0;font-size:14px">Tabla de transacciones Yappy</h4>
+                <span class="tag-info">${State.data.transactions.length} registros</span>
+              </div>
+              <div class="muted" style="font-size:12.5px;margin-bottom:12px">Sender, receiver, tipo, monto, canal, estado y descripción.</div>
+              <div class="flex gap-8" style="flex-wrap:wrap">
+                <button class="btn btn-primary" onclick="downloadTransactionsCSV()">Descargar CSV</button>
+                <button class="btn btn-secondary" onclick="downloadTransactionsJSON()">JSON</button>
+                <button class="btn btn-ghost" onclick="previewTable('transactions')">Vista previa</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-actions" style="margin-top:18px">
+          <button class="btn btn-orange" onclick="downloadAllTables()">Descargar todo (snapshot JSON)</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mt-20">
+      <div class="card-head"><h3>Datos del prototipo</h3></div>
+      <div class="card-body">
+        <div class="kv">
+          <div class="k">Usuarios Yappy</div><div class="v">${State.data.users.length}</div>
+          <div class="k">Transacciones</div><div class="v">${State.data.transactions.length}</div>
+          <div class="k">Casos / Oficios</div><div class="v">${State.data.cases.length}</div>
+          <div class="k">Cartas históricas</div><div class="v">${State.data.letters.length}</div>
+          <div class="k">Casos en manual</div><div class="v">${State.data.manualCases.length}</div>
+          <div class="k">Eventos en bitácora</div><div class="v">${State.data.auditLogs.length}</div>
+          <div class="k">Usuarios de la app</div><div class="v">${State.appUsers.length}</div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-secondary" onclick="exportAudit()">Exportar bitácora CSV</button>
+          <button class="btn btn-danger" onclick="resetData()">Reiniciar prototipo</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mt-20">
+      <div class="card-head"><h3>Acerca de</h3></div>
+      <div class="card-body">
+        <p><b>Yappy Oficios AI</b> — Producción en Vercel · API serverless · Resend / Webhook configurable.</p>
+        <p class="muted" style="font-size:12.5px;">Datos ficticios. Diseñado para Legal, Cumplimiento, Operaciones y Tecnología.</p>
+      </div>
+    </div>
+  `;
+  document.getElementById('s-mode').addEventListener('change', e => {
+    document.getElementById('s-api-block').style.display = e.target.value==='api'?'':'none';
+    document.getElementById('s-webhook-block').style.display = e.target.value==='webhook'?'':'none';
+    document.getElementById('s-smtp-block').style.display = e.target.value==='smtp'?'':'none';
+  });
+}
+
+function saveSmtp() {
+  State.smtp.mode = document.getElementById('s-mode').value;
+  State.smtp.webhookUrl = (document.getElementById('s-webhook')||{}).value || '';
+  State.smtp.host = (document.getElementById('s-host')||{}).value || '';
+  State.smtp.port = (document.getElementById('s-port')||{}).value || '';
+  State.smtp.user = (document.getElementById('s-user')||{}).value || '';
+  State.smtp.pass = (document.getElementById('s-pass')||{}).value || '';
+  State.smtp.from = document.getElementById('s-from').value;
+  persist();
+  toast('Configuración guardada.', 'success');
+}
+async function testEmail() {
+  saveSmtp();
+  if (!State.session) return toast('Inicie sesión.', 'error');
+  await sendEmail(State.session.email, 'Correo de prueba · Yappy Oficios AI', 'Correo de prueba enviado desde Yappy Oficios AI.\\n\\nFecha: '+nowISO()+'\\nModo: '+State.smtp.mode);
+  toast('Correo de prueba enviado a '+State.session.email, 'success');
+}
+function resetData() {
+  if (!confirm('Esto reiniciará TODOS los datos (oficios, cartas, usuarios). ¿Confirma?')) return;
+  localStorage.removeItem(STORE_KEY);
+  location.reload();
+}
+
+/* =====================================================
+   DOWNLOAD HELPERS (Yappy DB tables)
+===================================================== */
+function arrayToCSV(rows, headers) {
+  const escape = (v) => {
+    if (v === null || v === undefined) return '';
+    let s = typeof v === 'object' ? JSON.stringify(v) : String(v);
+    if (/[",\\n\\r]/.test(s)) s = '"' + s.replace(/"/g, '""') + '"';
+    return s;
+  };
+  const head = headers.map(escape).join(',');
+  const body = rows.map(r => headers.map(h => escape(r[h])).join(',')).join('\\n');
+  return '﻿' + head + '\\n' + body;
+}
+function triggerDownload(content, filename, mime) {
+  const blob = new Blob([content], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+}
+function downloadUsersCSV() {
+  const headers = ['user_id','identificacion','nombre','apellido','nombre_completo','celular','email','banco','fecha_registro_yappy','estado_usuario','tipo_usuario','created_at','updated_at'];
+  triggerDownload(arrayToCSV(State.data.users, headers), 'yappy_usuarios_'+new Date().toISOString().slice(0,10)+'.csv', 'text/csv;charset=utf-8');
+  audit('', 'Exportación de tabla', '', '', 'Descarga CSV users');
+  persist();
+  toast('Descargado: yappy_usuarios.csv', 'success');
+}
+function downloadUsersJSON() {
+  triggerDownload(JSON.stringify(State.data.users, null, 2), 'yappy_usuarios_'+new Date().toISOString().slice(0,10)+'.json', 'application/json');
+  audit('', 'Exportación de tabla', '', '', 'Descarga JSON users');
+  persist();
+  toast('Descargado: yappy_usuarios.json', 'success');
+}
+function downloadTransactionsCSV() {
+  const headers = ['transaction_id','fecha_transaccion','hora_transaccion','sender_user_id','sender_celular','sender_nombre','receiver_user_id','receiver_celular','receiver_nombre','tipo_transaccion','monto','moneda','canal','estado_transaccion','descripcion','created_at'];
+  triggerDownload(arrayToCSV(State.data.transactions, headers), 'yappy_transacciones_'+new Date().toISOString().slice(0,10)+'.csv', 'text/csv;charset=utf-8');
+  audit('', 'Exportación de tabla', '', '', 'Descarga CSV transactions');
+  persist();
+  toast('Descargado: yappy_transacciones.csv', 'success');
+}
+function downloadTransactionsJSON() {
+  triggerDownload(JSON.stringify(State.data.transactions, null, 2), 'yappy_transacciones_'+new Date().toISOString().slice(0,10)+'.json', 'application/json');
+  audit('', 'Exportación de tabla', '', '', 'Descarga JSON transactions');
+  persist();
+  toast('Descargado: yappy_transacciones.json', 'success');
+}
+function downloadAllTables() {
+  const dump = {
+    exported_at: nowISO(),
+    exported_by: State.session ? State.session.email : 'desconocido',
+    users: State.data.users, transactions: State.data.transactions,
+    cases: State.data.cases, case_results: State.data.caseResults,
+    letters: State.data.letters, manual_cases: State.data.manualCases,
+    audit_logs: State.data.auditLogs
+  };
+  triggerDownload(JSON.stringify(dump, null, 2), 'yappy_oficios_dump_'+new Date().toISOString().slice(0,10)+'.json', 'application/json');
+  audit('', 'Exportación completa', '', '', 'Snapshot completo');
+  persist();
+  toast('Snapshot completo descargado.', 'success');
+}
+function previewTable(which) {
+  const data = which === 'users' ? State.data.users : State.data.transactions;
+  const title = which === 'users' ? 'Vista previa · Tabla de usuarios Yappy' : 'Vista previa · Tabla de transacciones Yappy';
+  const headers = which === 'users'
+    ? ['user_id','identificacion','nombre_completo','celular','banco','fecha_registro_yappy','estado_usuario','tipo_usuario']
+    : ['transaction_id','fecha_transaccion','sender_celular','receiver_celular','tipo_transaccion','monto','estado_transaccion'];
+  const sample = data.slice(0, 25);
+  const body = `
+    <div class="muted" style="margin-bottom:10px;font-size:12.5px">Mostrando ${sample.length} de ${data.length} registros.</div>
+    <div class="table-wrap" style="max-height:55vh;overflow:auto">
+      <table class="data-table">
+        <thead><tr>${headers.map(h=>'<th>'+h+'</th>').join('')}</tr></thead>
+        <tbody>
+          ${sample.map(r => '<tr>' + headers.map(h => {
+            const v = r[h];
+            if (h === 'monto') return '<td class="num">'+fmtMoney(v)+'</td>';
+            return '<td>'+(v == null ? '—' : String(v))+'</td>';
+          }).join('') + '</tr>').join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+  showModal({
+    title, body,
+    actions: [
+      { label: 'Cerrar', class: 'btn-secondary', onclick: closeModal },
+      { label: 'Descargar CSV', class: 'btn-primary', onclick: () => {
+        if (which === 'users') downloadUsersCSV(); else downloadTransactionsCSV();
+        closeModal();
+      } }
+    ]
+  });
+}
+
+/* =====================================================
+   INBOX (DEMO)
+===================================================== */
+function renderInbox(view) {
+  view.innerHTML = `
+    <h2 class="page-title">Bandeja de correo (demo)</h2>
+    <div class="page-sub">${State.data.inbox.length} mensajes simulados/enviados desde la app.</div>
+    <div class="card">
+      <div class="card-pad">
+        ${State.data.inbox.length===0?'<div class="muted" style="text-align:center;padding:30px">Sin correos.</div>': State.data.inbox.map(m => `
+          <div class="inbox-msg">
+            <div class="meta">
+              <span><b>De:</b> ${m.from}</span>
+              <span><b>Para:</b> ${m.to}</span>
+              <span><b>Fecha:</b> ${fmtDateTime(m.timestamp)}</span>
+              <span class="status ${(m.delivery||'').includes('enviado')?'green':(m.delivery||'').includes('simulado')?'orange':'red'}">${m.delivery||'pendiente'}</span>
+              <span class="chip">modo: ${m.mode}</span>
+            </div>
+            <div class="subj">${m.subject}</div>
+            <pre>${m.body}</pre>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+/* =====================================================
+   MODAL
+===================================================== */
+function showModal({ title, body, actions }) {
+  const root = document.getElementById('modal-root');
+  root.innerHTML = `
+    <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+      <div class="modal">
+        <div class="modal-head">
+          <h3>${title}</h3>
+          <button class="btn btn-ghost" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">${body}</div>
+        <div class="modal-foot" id="modal-foot"></div>
+      </div>
+    </div>`;
+  const foot = document.getElementById('modal-foot');
+  actions.forEach((a) => {
+    const b = document.createElement('button');
+    b.className = 'btn ' + (a.class || 'btn-secondary');
+    b.textContent = a.label;
+    b.onclick = a.onclick;
+    foot.appendChild(b);
+  });
+}
+function closeModal() { document.getElementById('modal-root').innerHTML = ''; }
+
+/* =====================================================
+   INIT
+===================================================== */
+function init() {
+  loadStore();
+  seedData();
+  if (State.session) {
+    enterApp();
+  } else {
+    showAuthForm('login');
+  }
+}
+init();
+</script>
+</body>
+</html>
